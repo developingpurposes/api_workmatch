@@ -1,18 +1,35 @@
 Projeto Backend
 
 
-GRUPO:
+ROUTES: 
+ 
+ /USER 
+  - POST: Criar usuário.
+  - GET: Listar todos usuários.
+  - GET/:id : Listar usuário pelo id, rota para admin! 
+  
+ /LOGIN
+  - POST: Realizar login
+  
+ /PROJECTS
+  - POST: Criação de projetos
+  - GET: Listar todos os projetos
+  - GET/:id : Listar projeto pelo ID
+  - GET/user/:id : Listar projeto pelo id do usuário - Rota para admin!
+ 
+ /TECHNOLOGIES
+  - POST: Criação de tecnologias - Rota para admin!
+  
+  
+  
+  GRUPO:
 
-- @Davidson Quaresma
- 
-- @Ana Duarte
- 
-- @Felipe Siqueira
- 
-- @Julio Mello
- 
-- @rafael soares
- 
-- @Dreic
- 
+- @Davidson Quaresma 
+- @Ana Duarte 
+- @Felipe Siqueira 
+- @Julio Mello 
+- @rafael soares 
+- @Dreic 
 - @Thiago Rodrigues 
+  
+ 
