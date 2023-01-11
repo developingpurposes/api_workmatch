@@ -2,7 +2,10 @@ import request from "supertest";
 import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
-import { mockedLoginRequest } from "../../mocks/integration/login.mock";
+import {
+  mockedAdminLoginRequest,
+  mockedLoginRequest,
+} from "../../mocks/integration/login.mock";
 import { mockedUserCreate } from "../../mocks/integration/user.mocks";
 
 describe("/login", () => {
@@ -27,6 +30,14 @@ describe("/login", () => {
   test("Should be possible to login, method POST", async () => {
     const response = await request(app).post("/login").send(mockedLoginRequest);
     expect(response.body).toHaveProperty("token");
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("Should not be able to login with email or password invalid, method POST", async () => {
+    const response = await request(app)
+      .post("/login")
+      .send(mockedAdminLoginRequest);
+    expect(response.body).not.toHaveProperty("token");
     expect(response.statusCode).toBe(200);
   });
 });
