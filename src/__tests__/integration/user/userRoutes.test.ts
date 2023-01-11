@@ -127,4 +127,65 @@ describe("/users", () => {
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(404);
   });
+
+  test("Should not be possible to update without authentication, method POST", async () => {
+    const loginResponse = await request(app).post("/login").send(mockedLoginRequest)
+    const userToUpdate = await request(app).get("/users").set("Authorization", `Bearer ${loginResponse.body.token}`)
+    const response = await request(app).patch(`/users/${userToUpdate.body[0].id}`)
+  
+    expect(response.body).toHaveProperty("message")
+    expect(response.status).toBe(401)
+  
+  })
+  
+    test("Should not be possible to update with invalid id, method POST", async () => {
+      const newData = {name: "Teste", email:"teste@mail.com"}
+  
+      const loginResponse = await request(app).post("/login").send(mockedLoginRequest)
+      const token = `Bearer ${loginResponse.body.token}`
+  
+      const response = await request(app).patch(`/users/91792517-9ght-167a-4e9h-nn0ca67f8h`).set("Authorization", token ).send(newData)
+  
+      expect(response.body).toHaveProperty("message")
+      expect(response.status).toBe(404)
+  
+    })
+  
+  
+    test("Shoul not be possible to update another user without amin permission PATCH")
+  
+    test("Should be possible to update Adm credential, method PATCH", async () => {
+      const newAdmValue = {isAdm: true}
+  
+      const loginResponse = await request(app).post("/login").send(mockedLoginRequest)
+      const token = `Bearer ${loginResponse.body.token}`
+  
+      const userToUpdate = await request(app).get("/users").set("Authorization", token )
+  
+      const response = await request(app).patch(`/users/${userToUpdate.body[0].id}`).set("Authorization", token).send(newAdmValue)
+  
+      expect(response.body).toHaveProperty("message")
+      expect(response.status).toBe(401)
+  
+    })
+  
+  
+    test("Should be possible to update User, method PATCH", async ()=> {
+      const newData = {name: "Teste", email:"teste@mail.com"}
+  
+      const loginResponse = await request(app).post("/login").send(mockedLoginRequest)
+      const token = `Bearer ${loginResponse.body.token}`
+  
+      const userToUpdate = await request(app).get("/users").set("Authorization", token )
+  
+      const response = await request(app).patch(`/users/${userToUpdate.body[0].id}`).set("Authorization", token).send(newData)
+  
+      const updatedUser = await request(app).get("/users").set("Authorization", token)
+  
+  
+      expect(response.status).toBe(200)
+      expect(updatedUser.body[0].name).toEqual("Teste")
+      expect(updatedUser.body[0]).not.toHaveProperty("password")
+    })
+
 });
