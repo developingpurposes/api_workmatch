@@ -7,6 +7,7 @@ import {
 } from "../../mocks/integration/user.mocks";
 import AppDataSource from "../../../data-source";
 import {
+  mockedAdmin,
   mockedAdminLoginRequest,
   mockedLoginRequest,
 } from "../../mocks/integration/login.mock";
@@ -152,7 +153,22 @@ describe("/users", () => {
     })
   
   
-    test("Shoul not be possible to update another user without amin permission PATCH")
+    test("Shoul not be possible to update another user without admin permission, method PATCH", async () => {
+      const newValue = {isAdm: true}
+
+      const userLoginResponse = await request(app).post("/login").send(mockedLoginRequest)
+      const userToken = `Bearer ${userLoginResponse.body.token}`
+
+      const adminLoginResponse = await request(app).post("/login").send(mockedAdminLoginRequest)
+      const adminToken = `Bearer ${adminLoginResponse.body.token}`
+
+      const userToUpdateRequest = await request(app).get("/users").set("Authorization", adminToken)
+      const response = await request(app).patch(`/users/${userToUpdateRequest.body[0].id}`).set("Authorization",userToken).send(newValue)
+
+      expect(response.body).toHaveProperty("message")
+      expect(response.status).toBe(401)
+
+    })
   
     test("Should be possible to update Adm credential, method PATCH", async () => {
       const newAdmValue = {isAdm: true}
@@ -186,6 +202,66 @@ describe("/users", () => {
       expect(response.status).toBe(200)
       expect(updatedUser.body[0].name).toEqual("Teste")
       expect(updatedUser.body[0]).not.toHaveProperty("password")
+    })
+
+
+        test("Should not be possible to delete user without authentication, method DELETE",async () => {
+        const adminLoginResponse = await request(app).post("/login").send(mockedAdminLoginRequest);
+        const UserTobeDeleted = await request(app).get('/users').set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+
+        const response = await request(app).delete(`/users/${UserTobeDeleted.body[0].id}`)
+
+        expect(response.body).toHaveProperty("message")
+        expect(response.status).toBe(401)
+             
+    })
+
+    test("Should not be possible to delete user not being admin, method DELETE",async () => {
+        const userLoginResponse = await request(app).post("/login").send(mockedLoginRequest);
+        const adminLoginResponse = await request(app).post("/login").send(mockedAdminLoginRequest);
+        const UserTobeDeleted = await request(app).get('/users').set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+
+        const response = await request(app).delete(`/users/${UserTobeDeleted.body[0].id}`).set("Authorization", `Bearer ${userLoginResponse.body.token}`)
+
+        expect(response.body).toHaveProperty("message")
+        expect(response.status).toBe(403)
+             
+    })
+
+    test("Should be possible to soft delete user, method DELETE",async () => {
+        await request(app).post('/users').send(mockedAdmin)
+
+        const adminLoginResponse = await request(app).post("/login").send(mockedAdminLoginRequest);
+        const UserTobeDeleted = await request(app).get('/users').set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+
+        const response = await request(app).delete(`/users/${UserTobeDeleted.body[0].id}`).set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+        const findUser = await request(app).get('/users').set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+        expect(response.status).toBe(204)
+        expect(findUser.body[0].isActive).toBe(false)
+     
+    })
+
+    test("Should not be possible to delete user with isActive = false, method DELETE",async () => {
+        await request(app).post('/users').send(mockedAdmin)
+
+        const adminLoginResponse = await request(app).post("/login").send(mockedAdminLoginRequest);
+        const UserTobeDeleted = await request(app).get('/users').set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+
+        const response = await request(app).delete(`/users/${UserTobeDeleted.body[0].id}`).set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty("message")
+     
+    })
+
+    test("Should not be possible to delete user with invalid id, DELETE",async () => {
+        await request(app).post('/users').send(mockedAdmin)
+
+        const adminLoginResponse = await request(app).post("/login").send(mockedAdminLoginRequest);
+        
+        const response = await request(app).delete(`/users/13970660-5dbe-423a-9a9d-5c23b37943cf`).set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+        expect(response.status).toBe(404)
+        expect(response.body).toHaveProperty("message")
+     
     })
 
 });
