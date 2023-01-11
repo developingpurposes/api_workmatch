@@ -5,6 +5,7 @@ export interface IUserLogin {
 
 export interface IUserRequest {
   username: string;
+  name: string;
   email: string;
   password: string;
 }
