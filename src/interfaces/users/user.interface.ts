@@ -4,9 +4,18 @@ export interface IUserLogin {
 }
 
 export interface IUserRequest {
-  username: string;
   email: string;
   password: string;
+  username: string;
+  name: string;
+}
+
+export interface IUserRequestAdmin {
+  email: string;
+  password: string;
+  username: string;
+  name: string;
+  isAdm?: boolean;
 }
 
 export interface IUser {

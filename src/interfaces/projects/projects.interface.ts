@@ -1,4 +1,4 @@
-import { ITechnology } from "../technologies";
+import { ITechnology } from "../technologies/technologies.interface";
 
 export interface IProject {
     id: string;
