@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createdTechnologiesController } from "../../controllers/technologies/createdTechnologies.controller";
+import { deleteTechnologiesController } from "../../controllers/technologies/deleteTechnologies.controller";
 import { listAllTechnologiesController } from "../../controllers/technologies/listAllTechnologies.controller";
 import { updateTechnologiesController } from "../../controllers/technologies/updateTechnologies.controller";
 import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
@@ -29,6 +30,7 @@ techlogiesRoutes.get("",
 
 techlogiesRoutes.patch("/:id",
      ensureAuthMiddleware,
+     ensureIsAdminMiddleware,
      ensureTechnologyIdIsValidMiddleware,
      ensureDataIsValidMiddleware(updateSerializerTechnologies),
      ensureTechnologyIsExistMiddleware,
@@ -36,4 +38,9 @@ techlogiesRoutes.patch("/:id",
 )
 
 
-techlogiesRoutes.delete("/:id", (req, res) => res.status(201).json('deu certo rota delete') )
+techlogiesRoutes.delete("/:id",
+     ensureAuthMiddleware,
+     ensureIsAdminMiddleware,
+     ensureTechnologyIdIsValidMiddleware,
+     deleteTechnologiesController
+)
