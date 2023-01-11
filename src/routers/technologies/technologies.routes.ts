@@ -5,6 +5,7 @@ import { updateTechnologiesController } from "../../controllers/technologies/upd
 import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
 import { ensureIsAdminMiddleware } from "../../middlewares/ensureIsAdmin.middleware";
 import { ensureTechnologyIdIsValidMiddleware } from "../../middlewares/ensureTechnologyIdIsValid.middleware";
+import { ensureTechnologyIsExistMiddleware } from "../../middlewares/ensureTechnologyIsExist.middleware";
 import { ensureAuthMiddleware } from "../../middlewares/esureAuth.middleware";
 import { createdSerializerTechnologies, updateSerializerTechnologies } from "../../serializers/technologies/technologies.serializer";
 
@@ -15,6 +16,7 @@ techlogiesRoutes.post("",
      ensureAuthMiddleware,
      ensureIsAdminMiddleware,
      ensureDataIsValidMiddleware(createdSerializerTechnologies),
+     ensureTechnologyIsExistMiddleware,
      createdTechnologiesController
 )
 
@@ -29,6 +31,7 @@ techlogiesRoutes.patch("/:id",
      ensureAuthMiddleware,
      ensureTechnologyIdIsValidMiddleware,
      ensureDataIsValidMiddleware(updateSerializerTechnologies),
+     ensureTechnologyIsExistMiddleware,
      updateTechnologiesController
 )
 

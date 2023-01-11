@@ -8,12 +8,11 @@ export const createdTechnologiesService = async (technologiesData:ICreatedTechno
      
      const techlogiesRepository = dataSource.getRepository(Technologies)
 
-     const techlogiesExist = await techlogiesRepository.findOne({where: {name:technologiesData.name}})
-     console.log(techlogiesExist)
+     // const techlogiesExist = await techlogiesRepository.findOne({where: {name:technologiesData.name}})
      
-     if (techlogiesExist) {
-          throw new AppError("technology already exists", 409)
-     }
+     // if (techlogiesExist) {
+     //      throw new AppError("technology already exists", 409)
+     // }
 
      const createdTechlogie = techlogiesRepository.create(technologiesData)
      await techlogiesRepository.save(createdTechlogie)
