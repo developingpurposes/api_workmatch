@@ -10,7 +10,6 @@ export const createUserService = async (
   const userRepository = AppDataSource.getRepository(Users);
 
   const userExist = await userRepository.findOneBy({ email: userData.email });
-  console.log(userExist);
 
   if (userExist) {
     throw new AppError(

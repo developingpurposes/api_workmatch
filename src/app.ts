@@ -3,7 +3,7 @@ import "reflect-metadata";
 import "express-async-errors";
 import { handleError } from "./errors/handleErrors";
 import { sessionRoutes } from "./routers/session.routes";
-import { userRoutes } from "./routers/users/user.routes";
+import { userRoutes } from "./routers/user.routes";
 
 export const app = express();
 app.use(express.json());
