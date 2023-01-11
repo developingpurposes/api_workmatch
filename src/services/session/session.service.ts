@@ -15,8 +15,6 @@ export const createSessionService = async ({
     email: email,
   });
 
-  console.log(user, "dados do usuario");
-
   if (user.isActive == false) {
     throw new AppError("User invalid", 400);
   }

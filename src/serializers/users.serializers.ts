@@ -18,15 +18,16 @@ export const responseUserSerializer: SchemaOf<IUser> = yup.object().shape({
   id: yup.string(),
   email: yup.string().email(),
   username: yup.string(),
-  avatarUrl: yup.string(),
-  bio: yup.string(),
-  level: yup.string(),
-  contact: yup.string(),
+  name: yup.string(),
+  avatarUrl: yup.string().nullable(),
+  bio: yup.string().nullable(),
+  level: yup.string().nullable(),
+  contact: yup.string().nullable(),
   isActive: yup.boolean(),
   isAdm: yup.boolean(),
   createdAt: yup.date(),
   updatedAt: yup.date(),
-  deletedAt: yup.date(),
+  deletedAt: yup.date().nullable(),
 });
 
 export const listUsersSerializer = yup.array(responseUserSerializer);

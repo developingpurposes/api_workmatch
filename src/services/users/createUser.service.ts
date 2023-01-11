@@ -7,19 +7,24 @@ import { responseUserSerializer } from "../../serializers/users.serializers";
 export const createUserService = async (
   userData: IUserRequest
 ): Promise<IUser> => {
-  try {
-    const userRepository = AppDataSource.getRepository(Users);
+  const userRepository = AppDataSource.getRepository(Users);
 
-    const newUser = userRepository.create(userData);
-    await userRepository.save(newUser);
+  const userExist = await userRepository.findOneBy({ email: userData.email });
+  console.log(userExist);
 
-    const userResponse = await responseUserSerializer.validate(newUser, {
-      stripUnknown: true,
-      abortEarly: false,
-    });
-
-    return userResponse;
-  } catch (error) {
-    throw new AppError("User already exists, try again with new informations");
+  if (userExist) {
+    throw new AppError(
+      "User already exists, try again with new informations",
+      409
+    );
   }
+  const newUser = userRepository.create(userData);
+  await userRepository.save(newUser);
+
+  const userResponse = await responseUserSerializer.validate(newUser, {
+    stripUnknown: true,
+    abortEarly: false,
+  });
+
+  return userResponse;
 };
