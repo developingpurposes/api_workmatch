@@ -3,6 +3,7 @@ export interface IUserRequest {
   password: string;
   username: string;
   name: string;
+  isAdm?: boolean;
 }
 
 export interface IUser {
