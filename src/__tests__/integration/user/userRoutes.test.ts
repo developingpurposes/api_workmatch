@@ -208,23 +208,27 @@ describe("/users", () => {
 
   test("Should be possible to update User, method PATCH", async () => {
     const newData = { name: "Teste", email: "teste@mail.com" };
+    const randomUser = {
+      name: "asdpfok",
+      email: "teste22@mail.com",
+      password: "1234",
+    };
+    const randomUserLogin = { email: "teste22@mail.com", password: "1234" };
+
+    const userToUpdate = await request(app).post("/users").send(randomUser);
 
     const loginResponse = await request(app)
       .post("/login")
-      .send(mockedLoginRequest);
+      .send(randomUserLogin);
     const token = `Bearer ${loginResponse.body.token}`;
 
-    const userToUpdate = await request(app)
-      .get("/users")
-      .set("Authorization", token);
-
     const response = await request(app)
-      .patch(`/users/${userToUpdate.body[0].id}`)
+      .patch(`/users/${userToUpdate.body.id}`)
       .set("Authorization", token)
       .send(newData);
 
     const updatedUser = await request(app)
-      .get("/users")
+      .get(`/users/${userToUpdate.body.id}`)
       .set("Authorization", token);
 
     expect(response.status).toBe(200);

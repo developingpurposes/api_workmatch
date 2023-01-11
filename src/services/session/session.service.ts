@@ -15,12 +15,12 @@ export const createSessionService = async ({
     email: email,
   });
 
-  if (user.isActive == false) {
-    throw new AppError("User invalid", 400);
+  if (!user) {
+    throw new AppError("User or password invalid", 401);
   }
 
-  if (!user) {
-    throw new AppError("User or password invalid", 403);
+  if (user.isActive == false) {
+    throw new AppError("User invalid", 400);
   }
 
   const passwordMatch = await compare(password, user.password);
