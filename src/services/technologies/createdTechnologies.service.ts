@@ -1,10 +1,10 @@
-import { ITechnologies } from "../../interfaces/technologies/technologies.interface";
 import { Technologies } from "../../entities/technologies.entity";
 import { AppError } from "../../errors/appError";
 import dataSource from "../../data-source";
+import { ICreatedTechnology, ITechnologyReturn } from "../../interfaces/technologies";
 
 
-export const createdTechnologiesService = async (technologiesData:ITechnologies):Promise<Object> => {
+export const createdTechnologiesService = async (technologiesData:ICreatedTechnology):Promise<ITechnologyReturn> => {
      
      const techlogiesRepository = dataSource.getRepository(Technologies)
 
