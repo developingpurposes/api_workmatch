@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
 import { mockedLoginRequest } from "../../mocks/integration/login.mock";
+import { mockedUserCreate } from "../../mocks/integration/user.mocks";
 
 describe("/login", () => {
   let connection: DataSource;
@@ -16,7 +17,7 @@ describe("/login", () => {
         console.error("Error during Data Source initialization", err);
       });
 
-    await request(app).post("/users").send(mockedLoginRequest);
+    await request(app).post("/users").send(mockedUserCreate);
   });
 
   afterAll(async () => {
