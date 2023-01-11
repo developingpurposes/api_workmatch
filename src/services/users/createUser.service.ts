@@ -1,14 +1,14 @@
-import dataSource from "../../data-source";
+import AppDataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
 import { AppError } from "../../errors/appError";
-import { IUserRequest } from "../../interfaces/users";
-import { responseUserSerializer } from "../../serializers/users.serializer";
+import { IUser, IUserRequest } from "../../interfaces/users";
+import { responseUserSerializer } from "../../serializers/users.serializers";
 
 export const createUserService = async (
   userData: IUserRequest
-): Promise<Users> => {
+): Promise<IUser> => {
   try {
-    const userRepository = dataSource.getRepository(Users);
+    const userRepository = AppDataSource.getRepository(Users);
 
     const newUser = userRepository.create(userData);
     await userRepository.save(newUser);

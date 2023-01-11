@@ -1,4 +1,4 @@
-class AppError extends Error {
+export class AppError extends Error {
 
     statusCode: number
 
@@ -10,4 +10,3 @@ class AppError extends Error {
 
 }
 
-export { AppError }

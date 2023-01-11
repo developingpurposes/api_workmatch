@@ -1,7 +1,7 @@
 import dataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
 import { IUser } from "../../interfaces/users";
-import { listUsersSerializer } from "../../serializers/users.serializer";
+import { listUsersSerializer } from "../../serializers/users.serializers";
 
 export const listUsersService = async (): Promise<Array<IUser>> => {
   const userRepository = dataSource.getRepository(Users);

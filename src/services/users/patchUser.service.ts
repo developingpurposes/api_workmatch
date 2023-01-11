@@ -2,7 +2,7 @@ import dataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
 import { AppError } from "../../errors/appError";
 import { IUser, IUserUpdate } from "../../interfaces/users";
-import { responseUserSerializer } from "../../serializers/users.serializer";
+import { responseUserSerializer } from "../../serializers/users.serializers";
 
 export const patchUserService = async (
   newData: IUserUpdate,

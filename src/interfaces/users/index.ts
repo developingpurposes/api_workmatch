@@ -1,3 +1,8 @@
+export interface IUserLogin {
+  email: string;
+  password: string;
+}
+
 export interface IUserRequest {
   username: string;
   email: string;

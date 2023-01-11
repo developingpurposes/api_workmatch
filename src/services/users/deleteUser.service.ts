@@ -22,6 +22,7 @@ export const deleteUserService = async (
 
     user.isActive = false;
     await userRepository.save(user);
+    
   } catch (error) {
     throw new AppError(error.message, 400);
   }
