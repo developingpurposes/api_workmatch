@@ -17,12 +17,6 @@ export interface IProject {
     name?: string;
     imgUrl?: string;
     description?: string;
-    maxTeamSize: number;
-    isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
-    userId: string;
   }
 
   export interface IQueue {

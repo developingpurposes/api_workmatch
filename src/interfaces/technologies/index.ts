@@ -6,3 +6,8 @@ export interface ITechnology {
     updatedAt: Date;
     deletedAt: Date;
   }
+
+  export interface IUpdateTechnology {
+    name?: string;
+    icon?: string;
+  }
