@@ -9,11 +9,3 @@ export const mockedAdminLoginRequest: IUserLogin = {
   email: "rafael@mail.com",
   password: "123456",
 };
-
-export const mockedAdmin: IUserRequestAdmin = {
-  email: "rafael@mail.com",
-  password: "123456",
-  username: "rafael",
-  name: "rafael",
-  isAdm: true,
-};
