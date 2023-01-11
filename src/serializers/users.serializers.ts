@@ -19,7 +19,7 @@ export const responseUserSerializer: SchemaOf<IUser> = yup.object().shape({
   email: yup.string().email(),
   username: yup.string(),
   name: yup.string(),
-  avatarUrl: yup.string().nullable(),
+  avatarUrl: yup.string().nullable().notRequired(),
   bio: yup.string().nullable(),
   level: yup.string().nullable(),
   contact: yup.string().nullable(),
