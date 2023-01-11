@@ -17,6 +17,9 @@ export class Users {
 
   @Column({ length: 50 })
   username: string;
+  
+  @Column({ length: 50 })
+  name: string;
 
   @Column({ length: 50, nullable: true })
   avatarUrl: string;
@@ -33,7 +36,7 @@ export class Users {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column()
+  @Column({default: false})
   isAdm: boolean;
 
   @CreateDateColumn()
