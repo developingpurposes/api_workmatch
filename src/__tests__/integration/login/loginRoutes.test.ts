@@ -38,7 +38,7 @@ describe("/login", () => {
       .post("/login")
       .send(mockedAdminLoginRequest);
     expect(response.body).not.toHaveProperty("token");
-    expect(response.statusCode).toBe(404);
+    expect(response.statusCode).toBe(401);
   });
 
   test("Should not be able to login with isActive = false, method POST /login", async () => {
@@ -57,6 +57,6 @@ describe("/login", () => {
 
     expect(response.body).not.toHaveProperty("token");
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(401);
   });
 });
