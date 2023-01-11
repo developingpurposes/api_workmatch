@@ -1,4 +1,4 @@
-import { IUserLogin } from "../../interfaces/users";
+import { IUserLogin } from "../../interfaces/users/user.interface";
 import jwt from "jsonwebtoken";
 import { compare } from "bcryptjs";
 import AppDataSource from "../../data-source";
