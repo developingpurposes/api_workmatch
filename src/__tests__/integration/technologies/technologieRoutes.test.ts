@@ -82,27 +82,3 @@ describe("/technologies", () => {
     expect(response.status).toBe(200);
   });
 });
-
-// test("POST /users, Should be possible to create user", async () => {
-//     const response = await request(app).post("/users").send(mockedUserCreate);
-
-//     expect(response.body).toHaveProperty("id");
-//     expect(response.body).toHaveProperty("email");
-//     expect(response.body).not.toHaveProperty("password"); // NOT
-//     expect(response.body).toHaveProperty("username");
-//     expect(response.body).toHaveProperty("name");
-//     expect(response.body).toHaveProperty("avatarUrl");
-//     expect(response.body).toHaveProperty("bio");
-//     expect(response.body).toHaveProperty("level");
-//     expect(response.body).toHaveProperty("contact");
-//     expect(response.body).toHaveProperty("isActive");
-//     expect(response.body).toHaveProperty("isAdm");
-//     expect(response.body).toHaveProperty("createdAt");
-//     expect(response.body).toHaveProperty("updatedAt");
-
-//     //EXPECTED RESULTS
-//     expect(response.body.email).toEqual("fabio@mail.com");
-//     expect(response.body.isAdm).toEqual(false);
-//     expect(response.body.isActive).toEqual(true);
-//     expect(response.statusCode).toBe(201); //VALIDAR .STATUSCODE ou .STATUS
-// });
