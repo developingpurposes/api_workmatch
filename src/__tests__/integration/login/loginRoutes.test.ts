@@ -27,13 +27,13 @@ describe("/login", () => {
     await connection.destroy();
   });
 
-  test("Should be possible to login, method POST /login", async () => {
+  test("POST /login, Should be possible to login", async () => {
     const response = await request(app).post("/login").send(mockedLoginRequest);
     expect(response.body).toHaveProperty("token");
     expect(response.statusCode).toBe(200);
   });
 
-  test("Should not be able to login with email or password invalid, method POST /login", async () => {
+  test("POST /login, Should not be able to login with email or password invalid", async () => {
     const response = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -41,7 +41,7 @@ describe("/login", () => {
     expect(response.statusCode).toBe(401);
   });
 
-  test("Should not be able to login with isActive = false, method POST /login", async () => {
+  test("POST /login, Should not be able to login with isActive = false", async () => {
     const responseAdminLogin = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);

@@ -1,9 +1,9 @@
 import dataSource from "../../data-source";
 import { Technologies } from "../../entities/technologies.entity";
-import { ITechnologyReturn } from "../../interfaces/technologies/technologies.interface";
+import { ITechnologyRequest } from "../../interfaces/technologies/technologies.interface";
 
 export const listAllTechnologiesService = async (): Promise<
-  ITechnologyReturn[]
+  ITechnologyRequest[]
 > => {
   const technologiesRepository = dataSource.getRepository(Technologies);
 
