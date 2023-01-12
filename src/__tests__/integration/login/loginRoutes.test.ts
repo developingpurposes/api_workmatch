@@ -27,7 +27,7 @@ describe("/login", () => {
     await connection.destroy();
   });
 
-  test("POST /login, Should be possible to login", async () => {
+  test("POST /login, Should be able to login", async () => {
     const response = await request(app).post("/login").send(mockedLoginRequest);
     expect(response.body).toHaveProperty("token");
     expect(response.statusCode).toBe(200);
