@@ -286,12 +286,12 @@ describe("/users", () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-    const UserTobeDeleted = await request(app)
+    const userTobeDeleted = await request(app)
       .get("/users")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     const response = await request(app)
-      .delete(`/users/${UserTobeDeleted.body[0].id}`)
+      .delete(`/users/${userTobeDeleted.body[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
     expect(response.status).toBe(403);
     expect(response.body).toHaveProperty("message");
@@ -303,8 +303,9 @@ describe("/users", () => {
       .send(mockedAdminLoginRequest);
 
     const response = await request(app)
-      .delete(`/users/1`)
+      .delete("/users/1")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("message");
   });
