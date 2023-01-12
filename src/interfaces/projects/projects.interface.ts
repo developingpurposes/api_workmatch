@@ -1,4 +1,4 @@
-import { ITechnology } from "../technologies/technologies.interface";
+import { ITechnologyResponse } from "../technologies/technologies.interface";
 
 export interface IProject {
   id: string;
@@ -6,7 +6,13 @@ export interface IProject {
   imgUrl?: string;
   description?: string;
   maxTeamSize: number;
-  userId: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+  user: string;
+  userProjects: IQueue[];
+  projectTech: ITechnologyResponse[];
 }
 
 export interface IProjectUpdate {
@@ -21,16 +27,11 @@ export interface IQueue {
   projectId: string;
 }
 
-export interface IProjectCompleteResponse {
+export interface IProjectRequest {
   name: string;
   imgUrl: string;
   description: string;
   maxTeamSize: number;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-  userId: string;
-  queueList: IQueue[];
-  techsList: ITechnology[];
+  user: string;
+  projectTech: string[];
 }

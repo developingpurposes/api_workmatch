@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createUserController,
   deleteUserController,
+  getUserController,
   listUsersController,
   patchUserController,
 } from "../controllers/users.controller";
