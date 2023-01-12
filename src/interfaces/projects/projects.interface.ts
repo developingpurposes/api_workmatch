@@ -1,4 +1,4 @@
-import { ITechnology } from "../technologies/technologies.interface";
+import { ITechnologyResponse } from "../technologies/technologies.interface";
 
 export interface IProject {
   id: string;
@@ -12,7 +12,7 @@ export interface IProject {
   deletedAt: Date;
   user: string;
   userProjects: IQueue[];
-  projectTech: ITechnology[];
+  projectTech: ITechnologyResponse[];
 }
 
 export interface IProjectUpdate {
