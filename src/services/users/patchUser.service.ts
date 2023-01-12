@@ -24,7 +24,7 @@ export const patchUserService = async (
   });
 
   if (myProfile.id !== patchProfile.id && !myProfile.isAdm) {
-    throw new AppError("Missing admin permition", 401);
+    throw new AppError("Missing admin permissions", 401);
   }
 
   const updatedUser = userRepository.create({
