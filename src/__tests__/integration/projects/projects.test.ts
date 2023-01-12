@@ -129,7 +129,7 @@ describe("/login", () => {
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /projects, Should be possible to update Project", async () => {
+  test("PATCH /projects, Should be able to update Project", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
     const loginResponse = await request(app)
@@ -352,7 +352,7 @@ describe("/login", () => {
       .set("Authorization", token);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(401);
   });
 
   test("GET /projects, should not be able to list all participants if not owner", async () => {
@@ -370,7 +370,7 @@ describe("/login", () => {
       .set("Authorization", token);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(401);
   });
 
   test("PATCH /projects, should not be able to accept participants if not owner", async () => {
@@ -388,7 +388,7 @@ describe("/login", () => {
       .set("Authorization", token);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(401);
   });
 
   test("PATCH /projects, shouldbe able to accept participants", async () => {
