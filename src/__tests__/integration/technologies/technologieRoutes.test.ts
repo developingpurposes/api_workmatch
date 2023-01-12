@@ -2,7 +2,10 @@ import request from "supertest";
 import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
-import { mockedAdminLoginRequest } from "../../mocks/integration/login.mock";
+import {
+  mockedAdminLoginRequest,
+  mockedLoginRequest,
+} from "../../mocks/integration/login.mock";
 import { mockedCreateTechnology } from "../../mocks/integration/technologie.mock";
 import {
   mockedAdminUserCreate,
@@ -81,28 +84,34 @@ describe("/technologies", () => {
     expect(response.body.icon).toBe("http://reactNative.com");
     expect(response.status).toBe(200);
   });
+
+  test("DELETE /technologies:id, Admin should be possible to delete Technology", async () => {
+    await request(app).post("/users").send(mockedAdminUserCreate);
+    const adminLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedAdminLoginRequest);
+    const techs = await request(app).get("/technologies");
+
+    const response = await request(app)
+      .delete(`/technologies/${techs.body[0].id}`)
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+    expect(response.status).toBe(204);
+    expect(response.body).not.toHaveLength(1);
+  });
+
+  test("DELETE /technologies:id, User should not be possible to delete Technology", async () => {
+    await request(app).post("/users").send(mockedUserCreate);
+    const userLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedLoginRequest);
+    const techs = await request(app).get("/technologies");
+
+    const response = await request(app)
+      .delete(`/technologies/${techs.body[0].id}`)
+      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("message");
+  });
 });
-
-// test("POST /users, Should be possible to create user", async () => {
-//     const response = await request(app).post("/users").send(mockedUserCreate);
-
-//     expect(response.body).toHaveProperty("id");
-//     expect(response.body).toHaveProperty("email");
-//     expect(response.body).not.toHaveProperty("password"); // NOT
-//     expect(response.body).toHaveProperty("username");
-//     expect(response.body).toHaveProperty("name");
-//     expect(response.body).toHaveProperty("avatarUrl");
-//     expect(response.body).toHaveProperty("bio");
-//     expect(response.body).toHaveProperty("level");
-//     expect(response.body).toHaveProperty("contact");
-//     expect(response.body).toHaveProperty("isActive");
-//     expect(response.body).toHaveProperty("isAdm");
-//     expect(response.body).toHaveProperty("createdAt");
-//     expect(response.body).toHaveProperty("updatedAt");
-
-//     //EXPECTED RESULTS
-//     expect(response.body.email).toEqual("fabio@mail.com");
-//     expect(response.body.isAdm).toEqual(false);
-//     expect(response.body.isActive).toEqual(true);
-//     expect(response.statusCode).toBe(201); //VALIDAR .STATUSCODE ou .STATUS
-// });
