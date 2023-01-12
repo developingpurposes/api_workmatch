@@ -4,7 +4,7 @@ import {
   IUser,
   IUserLogin,
   IUserRequest,
-} from "../interfaces/users/user.interface";
+} from "../../interfaces/users/user.interface";
 
 export const userLoginSerializer: SchemaOf<IUserLogin> = yup.object().shape({
   email: yup.string().email().required(),
