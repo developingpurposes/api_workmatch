@@ -40,5 +40,4 @@ export class Projects {
 
   @OneToMany(() => Projects_technologies, (userProjects) => userProjects.technologies)
   projectTech: Projects_technologies[]
-
 }

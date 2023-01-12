@@ -154,6 +154,7 @@ describe("/login", () => {
     expect(updatedProject.body[0].name).toEqual("Teste");
   });
 
+
   test("PATCH /projects, should not be able to update projects without authentication", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
@@ -242,11 +243,25 @@ describe("/login", () => {
 
     const response = await request(app).post(
       `/projects/joinqueue/${project.body[0].id}`
+      
+  test("DELETE /projects, Should not be able to delete projects without auhentication", async () => {
+    const userLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedLoginRequest);
+
+    const projectToBeDeleted = await request(app)
+      .get("/projects")
+      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
+
+    const response = await request(app).delete(
+      `/projects/${projectToBeDeleted.body[0].id}`
+
     );
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });
+
 
   test("POST /projects, should be able to join projects", async () => {
     const loginResponse = await request(app)
@@ -396,5 +411,51 @@ describe("/login", () => {
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(200);
+
+  test("DELETE /projects, Should be able to soft delete project", async () => {
+    const adminLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedAdminLoginRequest);
+
+    const projectToBeDeleted = await request(app)
+      .get("/projects")
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+    const response = await request(app)
+      .delete(`/users/${projectToBeDeleted.body[0].id}`)
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+    expect(response.status).toBe(204);
+  });
+
+  test("DELETE /projects, Should not be able to delete project with isActive = false", async () => {
+    const adminLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedAdminLoginRequest);
+
+    const projectToBeDeleted = await request(app)
+      .get("/projects")
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+    const response = await request(app).delete(
+      `/users/${projectToBeDeleted.body[0].id}`
+    );
+
+    expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("DELETE /projects, Should not be able to delete project with invalid id", async () => {
+    const adminLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedAdminLoginRequest);
+
+    const response = await request(app)
+      .delete("/projects/56516144")
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("message");
+
   });
 });
