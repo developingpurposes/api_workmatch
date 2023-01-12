@@ -15,12 +15,12 @@ ROUTES:
   
  /PROJECTS
   - POST: Criação de projetos.
-  - POST /JOINQUEUE/:id - Usuario solicita entrada no projeto pelo id do projeto.
-  - GET /QUEUE - Lista todos usuarios que estao na fila para entrar no projeto, apenas dono do projeto pode usar!
+  - POST /joinqueue/:id - Usuario solicita entrada no projeto pelo id do projeto.
+  - GET /:id/queue - Lista todos usuarios que estao na fila para entrar no projeto, apenas dono do projeto pode usar!
   - GET: Listar todos os projetos.
   - GET /user/:id : Listar projetos pelo id do usuário.
   - PATCH /:id : Atualiza projeto pelo id do projeto, apenas o dono do projeto pode alterar o projeto.
-  - PATCH /ACCEPTPARTICIPANT/:id - Aceita o participante no projeto, apenas o dono do projeto pode aceitar participantes.
+  - PATCH /acceptparticipant/:id - Aceita o participante no projeto, apenas o dono do projeto pode aceitar participantes.
   - DELETE /:id : Deleta projeto pelo id do projeto, apenas o dono do projeto e o admin pode deletar o mesmo.
    
  
