@@ -20,13 +20,12 @@ export const createSessionService = async ({
   }
 
   if (user.isActive == false) {
-    throw new AppError("User invalid", 400);
+    throw new AppError("User invalid", 401);
   }
 
   const passwordMatch = await compare(password, user.password);
-
   if (!passwordMatch) {
-    throw new AppError("User or password invalid", 403);
+    throw new AppError("User or password invalid", 401);
   }
 
   const token = jwt.sign(
