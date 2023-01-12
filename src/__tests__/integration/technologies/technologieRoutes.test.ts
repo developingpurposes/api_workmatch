@@ -67,11 +67,19 @@ describe("/technologies", () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
+    const techs = await request(app).get("/technologies");
 
     const response = await request(app)
-      .patch("/technologies")
-      .send()
+      .patch(`/technologies/${techs.body[0].id}`)
+      .send({
+        name: "React Native 2",
+        icon: "http://reactNative.com",
+      })
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+    expect(response.body.name).toBe("React Native 2");
+    expect(response.body.icon).toBe("http://reactNative.com");
+    expect(response.status).toBe(200);
   });
 });
 
