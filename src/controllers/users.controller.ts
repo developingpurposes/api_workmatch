@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { IUserRequest, IUserUpdate } from "../interfaces/users/user.interface";
 import { createUserService } from "../services/users/createUser.service";
 import { deleteUserService } from "../services/users/deleteUser.service";
+import { getUsesService } from "../services/users/getUser.service";
 import { listUsersService } from "../services/users/listUsers.service";
 import { patchUserService } from "../services/users/patchUser.service";
 
@@ -14,6 +15,12 @@ export const createUserController = async (req: Request, res: Response) => {
 export const listUsersController = async (req: Request, res: Response) => {
   const usersList = await listUsersService();
   return res.status(200).json(usersList);
+};
+
+export const getUserController = async (req: Request, res: Response) => {
+  const userId: string = req.params.id;
+  const userData = await getUsesService(userId);
+  return res.status(200).json(userData);
 };
 
 export const patchUserController = async (req: Request, res: Response) => {

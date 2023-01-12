@@ -30,7 +30,7 @@ ROUTES:
   - PATCH /:id : Atualiza tecnologia pelo id, Rota apenas para administrador
   - DELETE /:id : Deleta tecnologia pelo id, Rota apenas para administrador
   
- 
+ technologies
   
   GRUPO:
 
