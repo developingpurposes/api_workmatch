@@ -1,5 +1,15 @@
-import { hashSync } from "bcryptjs";
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { getRounds, hashSync } from "bcryptjs";
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Projects } from "./projects.entity";
 import { Projects_queue } from "./projects_queue";
 import { Users_technologies } from "./users_technologies.entity";
@@ -12,16 +22,16 @@ export class Users {
   @Column({ length: 50, unique: true })
   email: string;
 
-  @Column({ length: 100 })
+  @Column()
   password: string;
 
   @Column({ length: 50 })
   username: string;
-  
+
   @Column({ length: 50 })
   name: string;
 
-  @Column({ length: 50, nullable: true })
+  @Column({ nullable: true })
   avatarUrl: string;
 
   @Column({ length: 300, nullable: true })
@@ -36,7 +46,7 @@ export class Users {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({default: false, nullable:true})
+  @Column({ default: false, nullable: true })
   isAdm: boolean;
 
   @CreateDateColumn()
@@ -51,15 +61,18 @@ export class Users {
   @BeforeUpdate()
   @BeforeInsert()
   hashPassword() {
-    this.password = hashSync(this.password, 10);
+    const isEncrypted = getRounds(this.password);
+    if (!isEncrypted) {
+      this.password = hashSync(this.password, 10);
+    }
   }
 
-  @OneToMany(() => Projects, (project)=> project.user)
-  projects: Projects[]
+  @OneToMany(() => Projects, (project) => project.ownerId)
+  projects: Projects[];
 
-  @OneToMany(()=> Users_technologies, (userTechs) => userTechs.user)
-  userTechs: Users_technologies[]
+  @OneToMany(() => Users_technologies, (userTechs) => userTechs.user)
+  userTechs: Users_technologies[];
 
-  @OneToMany(()=> Projects_queue, (userProjects) => userProjects.user)
-  userProjects: Projects_queue[]
+  @OneToMany(() => Projects_queue, (userProjects) => userProjects.user)
+  userProjects: Projects_queue[];
 }
