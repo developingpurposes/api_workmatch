@@ -28,7 +28,7 @@ describe("/users", () => {
     await connection.destroy();
   });
 
-  test("POST /users, Should be possible to create user", async () => {
+  test("POST /users, Should be able to create user", async () => {
     const response = await request(app).post("/users").send(mockedUserCreate);
 
     expect(response.body).toHaveProperty("id");
@@ -102,7 +102,7 @@ describe("/users", () => {
 
     expect(response.body).toHaveProperty("id");
     expect(response.body).toHaveProperty("email");
-    expect(response.body).not.toHaveProperty("password"); // NOT
+    expect(response.body).not.toHaveProperty("password");
     expect(response.body).toHaveProperty("username");
     expect(response.body).toHaveProperty("name");
     expect(response.body).toHaveProperty("avatarUrl");
@@ -128,7 +128,7 @@ describe("/users", () => {
     expect(response.status).toBe(404);
   });
 
-  test("POST /users, Should not be possible to update without authentication", async () => {
+  test("POST /users, Should not be able to update without authentication", async () => {
     const loginResponse = await request(app)
       .post("/login")
       .send(mockedLoginRequest);
@@ -143,7 +143,7 @@ describe("/users", () => {
     expect(response.status).toBe(401);
   });
 
-  test("POST /users, Should not be possible to update with invalid id", async () => {
+  test("POST /users, Should not be able to update with invalid id", async () => {
     const newData = { name: "Teste", email: "teste@mail.com" };
 
     const loginResponse = await request(app)
@@ -160,7 +160,7 @@ describe("/users", () => {
     expect(response.status).toBe(404);
   });
 
-  test("PATCH /users, Should not be possible to update another user without admin permission", async () => {
+  test("PATCH /users, Should not be able to update another user without admin permission", async () => {
     const newValue = { isAdm: true };
 
     const userLoginResponse = await request(app)
@@ -185,7 +185,7 @@ describe("/users", () => {
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /users, Should be possible to update Adm credential", async () => {
+  test("PATCH /users, Should be able to update Adm credential", async () => {
     const newAdmValue = { isAdm: true };
 
     const loginResponse = await request(app)
@@ -206,7 +206,7 @@ describe("/users", () => {
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /users, Should be possible to update user", async () => {
+  test("PATCH /users, Should be able to update user", async () => {
     const newData = { name: "Teste", email: "teste@mail.com" };
     const randomUser = {
       name: "asdpfok",
@@ -236,7 +236,7 @@ describe("/users", () => {
     expect(updatedUser.body[0]).not.toHaveProperty("password");
   });
 
-  test("DELETE /users, Should not be possible to delete user without authentication", async () => {
+  test("DELETE /users, Should not be able to delete user without authentication", async () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -252,7 +252,7 @@ describe("/users", () => {
     expect(response.status).toBe(401);
   });
 
-  test("DELETE /users, Should not be possible to delete user not being admin", async () => {
+  test("DELETE /users, Should not be able to delete user not being admin", async () => {
     const userLoginResponse = await request(app)
       .post("/login")
       .send(mockedLoginRequest);
@@ -268,7 +268,7 @@ describe("/users", () => {
     expect(response.body).toHaveLength(1);
   });
 
-  test("DELETE /users, Should be possible to soft delete user", async () => {
+  test("DELETE /users, Should be able to soft delete user", async () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -282,7 +282,7 @@ describe("/users", () => {
     expect(response.status).toBe(204);
   });
 
-  test("DELETE /users, Should not be possible to delete user with isActive = false", async () => {
+  test("DELETE /users, Should not be able to delete user with isActive = false", async () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -297,7 +297,7 @@ describe("/users", () => {
     expect(response.body).toHaveProperty("message");
   });
 
-  test("DELETE /users, Should not be possible to delete user with invalid id", async () => {
+  test("DELETE /users, Should not be able to delete user with invalid id", async () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
