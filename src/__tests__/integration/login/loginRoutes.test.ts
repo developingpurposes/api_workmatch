@@ -6,7 +6,7 @@ import {
   mockedAdminLoginRequest,
   mockedLoginRequest,
 } from "../../mocks/integration/login.mock";
-import { mockedUserCreate } from "../../mocks/integration/user.mocks";
+import { mockedAdminUserCreate, mockedUserCreate } from "../../mocks/integration/user.mocks";
 
 describe("/login", () => {
   let connection: DataSource;
@@ -42,6 +42,7 @@ describe("/login", () => {
   });
 
   test("POST /login, Should not be able to login with isActive = false", async () => {
+    await request(app).post("/users").send(mockedAdminUserCreate)
     const responseAdminLogin = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -49,7 +50,7 @@ describe("/login", () => {
       .get("/users")
       .set("Authorization", `Bearer ${responseAdminLogin.body.token}`);
     await request(app)
-      .delete(`/users/${findUser.body[0].id}`)
+      .delete(`/users/${findUser.body[1].id}`)
       .set("Authorization", `Bearer ${responseAdminLogin.body.token}`);
     const response = await request(app)
       .post("/login")
