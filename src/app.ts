@@ -2,9 +2,9 @@ import express from "express";
 import "reflect-metadata";
 import "express-async-errors";
 import { handleError } from "./errors/handleErrors";
-import { sessionRoutes } from "./routers/session.routes";
-import { userRoutes } from "./routers/user.routes";
 import { techlogiesRoutes } from "./routers/technologies/technologies.routes";
+import { userRoutes } from "./routers/users/user.routes";
+import { sessionRoutes } from "./routers/session/session.routes";
 import { projectsRoutes } from "./routers/projects/projects.routes";
 
 export const app = express();
