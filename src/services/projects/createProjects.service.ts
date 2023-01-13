@@ -22,7 +22,7 @@ export const createProjectsServices = async (
   const technologyRepository = dataSource.getRepository(Technologies);
 
   const userExist = await userRepository.findOne({
-    where: { id: newProject.userId },
+    where: { id: newProject.ownerId },
   });
 
   if (!userExist) {
@@ -31,13 +31,13 @@ export const createProjectsServices = async (
 
   const projectRepository = dataSource.getRepository(Projects);
 
-  const techsSeach = await technologyRepository.find({
+  const techsSearch = await technologyRepository.find({
     where: {
       id: In(technologiesIds),
     },
   });
 
-  if (!techsSeach.length) {
+  if (!techsSearch.length) {
     throw new AppError("Technologies is not found!", 404);
   }
 
@@ -48,11 +48,11 @@ export const createProjectsServices = async (
   await projectRepository.update(
     { id: projectResponse.id },
     {
-      user: userExist,
+      owner: userExist,
     }
   );
 
-  techsSeach.forEach(async (newTechlogy) => {
+  techsSearch.forEach(async (newTechlogy) => {
     const projectTechsResponse = projectTechsRepository.create({});
 
     await projectTechsRepository.save(projectTechsResponse);

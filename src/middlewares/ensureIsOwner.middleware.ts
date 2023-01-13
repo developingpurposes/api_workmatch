@@ -20,7 +20,7 @@ export const ensureIsOwnerMiddleware = async (
     .where("projects.id = :id", { id: projectId })
     .getOne();
 
-  if (projectSeach.user.id !== userId) {
+  if (projectSeach.owner.id !== userId) {
     throw new AppError("User not authorization!", 403);
   }
   next();

@@ -11,7 +11,7 @@ export const createdSerializerProjects: yup.SchemaOf<IProjectRequest> = yup
     imgUrl: yup.string().nullable(),
     description: yup.string().nullable(),
     maxTeamSize: yup.number().required(),
-    userId: yup.string().required().uuid(),
+    ownerId: yup.string().required().uuid(),
     technologies: yup.array().required(),
   });
 
