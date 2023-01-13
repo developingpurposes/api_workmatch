@@ -9,7 +9,7 @@ const setDataSourceConfig = (): DataSourceOptions => {
     "./migrations/**.{js,ts}"
   );
 
-  const nodeEnv = process.env.NODE_ENV;
+  const nodeEnv :string = process.env.NODE_ENV;
 
   if (nodeEnv === "production") {
     return {
