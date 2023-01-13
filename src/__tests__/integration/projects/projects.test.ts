@@ -39,6 +39,7 @@ describe("/login", () => {
     const registerResponse = await request(app)
       .post("/users")
       .send(mockedAdminUserCreate);
+
     const loginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -48,7 +49,6 @@ describe("/login", () => {
       .send(mockedCreateTechnology)
       .set("Authorization", `Bearer ${loginResponse.body.token}`);
 
-    mockedProjectCreate.ownerId = registerResponse.body.id;
     mockedProjectCreate.technologies = [`${technologies.body.id}`];
 
     const response = await request(app)
@@ -65,7 +65,7 @@ describe("/login", () => {
     expect(response.body).toHaveProperty("createdAt");
     expect(response.body).toHaveProperty("updatedAt");
     expect(response.body).toHaveProperty("onwerId");
-    expect(response.body).toHaveProperty("projectTech");
+    expect(response.body).toHaveProperty("projectTechs");
 
     expect(response.body.projectTech.length).toEqual(1);
     expect(response.body.isActive).toEqual(true);
