@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Projects_technologies } from "./projects_technologies";
 import { Users_technologies } from "./users_technologies.entity";
 
@@ -25,6 +33,9 @@ export class Technologies {
   @OneToMany(() => Users_technologies, (userTechs) => userTechs.technologies)
   userTechs: Users_technologies[];
 
-  @OneToMany(() => Projects_technologies, (userTechs) => userTechs.technologies)
+  @OneToMany(
+    () => Projects_technologies,
+    (projectTech) => projectTech.technologies
+  )
   projectTech: Projects_technologies[];
 }
