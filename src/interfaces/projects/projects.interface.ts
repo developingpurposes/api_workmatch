@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+import { ITechnologyResponse } from "../technologies/technologies.interface";
+
+>>>>>>> 4a60a9cc2130b4a2e488b11c9866192a3f428b38
 export interface IProject {
   id: string;
   name: string;
@@ -10,7 +15,11 @@ export interface IProject {
   deletedAt: Date;
   userId: string;
   userProjects: IQueue[];
+<<<<<<< HEAD
   projectTech: string[];
+=======
+  projectTech: ITechnologyResponse[];
+>>>>>>> 4a60a9cc2130b4a2e488b11c9866192a3f428b38
 }
 
 export interface IProjectUpdate {

@@ -23,7 +23,7 @@ export class Projects {
   @Column({ nullable: true })
   imgUrl: string;
 
-  @Column({ length: 300, nullable: true })
+  @Column({ nullable: true })
   description: string;
 
   @Column()
@@ -42,11 +42,20 @@ export class Projects {
   deletedAt: Date;
 
   @ManyToOne(() => Users, (user) => user.projects)
-  user: Users;
+  ownerId: Users;
 
   @OneToMany(() => Projects_queue, (userProjects) => userProjects.projects)
+<<<<<<< HEAD
   userProjects: Projects_queue[];
 
   @OneToMany(() => Projects_technologies, (projectTech) => projectTech.projects)
+=======
+  participants: Projects_queue[];
+
+  @OneToMany(
+    () => Projects_technologies,
+    (userProjects) => userProjects.technologies
+  )
+>>>>>>> 4a60a9cc2130b4a2e488b11c9866192a3f428b38
   projectTech: Projects_technologies[];
 }

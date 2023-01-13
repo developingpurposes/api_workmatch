@@ -20,9 +20,7 @@ export const deleteUserService = async (
       throw new AppError("User is already inactive", 400);
     }
 
-    user.isActive = false;
-    user.deletedAt = new Date();
-    await userRepository.save(user);
+    await userRepository.softRemove(user);
   } catch (error) {
     throw new AppError(error.message, 400);
   }
