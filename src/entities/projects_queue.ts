@@ -10,7 +10,7 @@ export class Projects_queue {
   @Column({ default: false })
   isConfirmed: boolean;
 
-  @ManyToOne(() => Users, (user) => user.userProjects)
+  @ManyToOne(() => Users, (user) => user.participants)
   user: Users;
 
   @ManyToOne(() => Projects, (projects) => projects.participants)

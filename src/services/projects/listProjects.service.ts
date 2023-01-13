@@ -5,18 +5,18 @@ export const listsProjectsServices = async (): Promise<Projects[]> => {
   const projects = await dataSource
     .createQueryBuilder()
     .from(Projects, "projects")
-    .leftJoin("projects.user", "user")
+    .leftJoin("projects.owner", "owner")
     .select([
       "projects",
-      "user.id",
-      "user.email",
-      "user.username",
-      "user.level",
-      "user.avatarUrl",
-      "user.contact",
+      "owner.id",
+      "owner.email",
+      "owner.username",
+      "owner.level",
+      "owner.avatarUrl",
+      "owner.contact",
     ])
-    .leftJoinAndSelect("projects.projectTech", "projectTech")
-    .leftJoinAndSelect("projectTech.technologies", "technologies")
+    .leftJoinAndSelect("projects.projectTechs", "projectTechs")
+    .leftJoinAndSelect("projectTechs.technologies", "technologies")
     .getMany();
 
   return projects;

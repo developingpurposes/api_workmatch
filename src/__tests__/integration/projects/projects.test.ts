@@ -10,6 +10,7 @@ import {
   invalidMockedProjectCreate,
   mockedProjectCreate,
 } from "../../mocks/integration/project.mock";
+import { mockedCreateTechnology } from "../../mocks/integration/technologie.mock";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
@@ -42,7 +43,13 @@ describe("/login", () => {
       .post("/login")
       .send(mockedAdminLoginRequest);
 
-    mockedProjectCreate.user = registerResponse.body.id;
+    const technologies = await request(app)
+      .post("/technologies")
+      .send(mockedCreateTechnology)
+      .set("Authorization", `Bearer ${loginResponse.body.token}`);
+
+    mockedProjectCreate.ownerId = registerResponse.body.id;
+    mockedProjectCreate.technologies = [`${technologies.body.id}`];
 
     const response = await request(app)
       .post("/projects")
@@ -57,11 +64,10 @@ describe("/login", () => {
     expect(response.body).toHaveProperty("isActive");
     expect(response.body).toHaveProperty("createdAt");
     expect(response.body).toHaveProperty("updatedAt");
-    expect(response.body).toHaveProperty("user");
-    expect(response.body).toHaveProperty("userProjects");
+    expect(response.body).toHaveProperty("onwerId");
     expect(response.body).toHaveProperty("projectTech");
 
-    expect(response.body.projectTech.length).toEqual(3);
+    expect(response.body.projectTech.length).toEqual(1);
     expect(response.body.isActive).toEqual(true);
     expect(response.status).toBe(201);
   });
