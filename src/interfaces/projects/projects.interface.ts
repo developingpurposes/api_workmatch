@@ -9,7 +9,7 @@ export interface IProject {
   updatedAt: Date;
   deletedAt: Date;
   ownerId: string;
-  projectTech: string[];
+  technologies: string[];
 }
 
 export interface IProjectUpdate {

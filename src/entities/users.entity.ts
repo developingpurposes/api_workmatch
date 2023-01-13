@@ -67,12 +67,12 @@ export class Users {
     }
   }
 
-  @OneToMany(() => Projects, (project) => project.owner)
+  @OneToMany(() => Projects, (projects) => projects.owner)
   projects: Projects[];
 
   @OneToMany(() => Users_technologies, (userTechs) => userTechs.user)
   userTechs: Users_technologies[];
 
-  @OneToMany(() => Projects_queue, (userProjects) => userProjects.user)
-  userProjects: Projects_queue[];
+  @OneToMany(() => Projects_queue, (participants) => participants.user)
+  participants: Projects_queue[];
 }
