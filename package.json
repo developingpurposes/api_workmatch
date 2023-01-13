@@ -1,5 +1,5 @@
 {
-  "name": "sprint5",
+  "name": "apiworkmatch",
   "version": "1.0.0",
   "main": "index.ts",
   "author": " ",
@@ -9,7 +9,7 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "test": "cross-env NODE_ENV=test SECRET_KEY=chavesecreta jest --verbose --runInBand",
     "build": "tsc",
-    "start": "node dist/src/server.js"
+    "start": "node dist/server.js"
   },
   "devDependencies": {},
   "dependencies": {
