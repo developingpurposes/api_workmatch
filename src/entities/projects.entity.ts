@@ -17,7 +17,7 @@ export class Projects {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, unique: true })
   name: string;
 
   @Column({ nullable: true })
@@ -42,7 +42,7 @@ export class Projects {
   deletedAt: Date;
 
   @ManyToOne(() => Users, (user) => user.projects)
-  ownerId: Users;
+  owner: Users;
 
   @OneToMany(() => Projects_queue, (userProjects) => userProjects.projects)
   participants: Projects_queue[];
