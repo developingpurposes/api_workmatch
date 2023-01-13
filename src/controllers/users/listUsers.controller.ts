@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { listUsersService } from "../../services/users/listUsers.service";
+import { listUserService } from "../../services/users/listUsers.service";
 
 export const listUsersController = async (req: Request, res: Response) => {
-  const usersList = await listUsersService();
+  const usersList = await listUserService();
   return res.status(200).json(usersList);
 };
