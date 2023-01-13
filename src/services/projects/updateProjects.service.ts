@@ -10,7 +10,11 @@ export const updateProjectsServices = async (
   newProject: IProjectUpdate,
   projectId: string
 ): Promise<Projects> => {
-  const technologiesIds = newProject.technologies;
+  let technologiesIds = newProject.technologies;
+
+  if (technologiesIds == undefined) {
+    technologiesIds = [];
+  }
 
   const projectRepository = dataSource.getRepository(Projects);
 

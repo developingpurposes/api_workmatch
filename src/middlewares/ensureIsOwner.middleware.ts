@@ -15,8 +15,8 @@ export const ensureIsOwnerMiddleware = async (
   const projectSeach = await dataSource
     .createQueryBuilder()
     .from(Projects, "projects")
-    .leftJoin("projects.user", "user")
-    .select(["projects", "user.id"])
+    .leftJoin("projects.owner", "owner")
+    .select(["projects", "owner.id"])
     .where("projects.id = :id", { id: projectId })
     .getOne();
 
