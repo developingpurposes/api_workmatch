@@ -126,7 +126,7 @@ describe("/login", () => {
     expect(response.status).toBe(200);
   });
 
-  test("GET /projects, should not be able to list projects without authentication", async () => {
+  test("GET /projects, Should not be able to list projects without authentication", async () => {
     const response = await request(app).get("/projects");
 
     expect(response.body).toHaveProperty("message");
