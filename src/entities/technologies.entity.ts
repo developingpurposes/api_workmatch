@@ -35,7 +35,7 @@ export class Technologies {
 
   @OneToMany(
     () => Projects_technologies,
-    (projectTech) => projectTech.technologies
+    (projectTechs) => projectTechs.technologies
   )
-  projectTech: Projects_technologies[];
+  projectTechs: Projects_technologies[];
 }

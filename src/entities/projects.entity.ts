@@ -42,12 +42,15 @@ export class Projects {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => Users, (user) => user.projects)
+  @ManyToOne(() => Users, (owner) => owner.projects)
   owner: Users;
 
-  @OneToMany(() => Projects_queue, (userProjects) => userProjects.projects)
+  @OneToMany(() => Projects_queue, (participants) => participants.projects)
   participants: Projects_queue[];
 
-  @OneToMany(() => Projects_technologies, (projects) => projects.projectTech)
-  projectTech: Projects_technologies[];
+  @OneToMany(
+    () => Projects_technologies,
+    (projectTechs) => projectTechs.projects
+  )
+  projectTechs: Projects_technologies[];
 }
