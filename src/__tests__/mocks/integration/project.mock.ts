@@ -1,15 +1,12 @@
-import {
-  IProject,
-  IProjectRequest,
-} from "../../../interfaces/projects/projects.interface";
+import { IProjectRequest } from "../../../interfaces/projects/projects.interface";
 
 export const mockedProjectCreate: IProjectRequest = {
   name: "salve os dog",
   imgUrl: "894985181",
   description: "de comida aos dogs de rua",
   maxTeamSize: 8,
-  user: "1233",
-  projectTech: ["react", "javascript", "python"],
+  ownerId: "1233",
+  technologies: ["react", "javascript", "python"],
 };
 
 export const invalidMockedProjectCreate = {

@@ -18,7 +18,7 @@ export class Technologies {
   @Column({ length: 50 })
   name: string;
 
-  @Column({ length: 50 })
+  @Column()
   icon: string;
 
   @CreateDateColumn()

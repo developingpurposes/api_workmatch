@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -47,9 +48,6 @@ export class Projects {
   @OneToMany(() => Projects_queue, (userProjects) => userProjects.projects)
   participants: Projects_queue[];
 
-  @OneToMany(
-    () => Projects_technologies,
-    (userProjects) => userProjects.technologies
-  )
+  @OneToMany(() => Projects_technologies, (projects) => projects.projectTech)
   projectTech: Projects_technologies[];
 }

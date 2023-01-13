@@ -4,10 +4,10 @@ import { AnySchema } from "yup";
 export const ensureDataIsValidMiddleware =
   (schema: AnySchema) =>
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId: string = req.user.id;
+    const ownerId: string = req.user.id;
     try {
       const validatedData = await schema.validate(
-        { ...req.body, userId },
+        { ...req.body, ownerId },
         {
           abortEarly: false,
           stripUnknown: true,
