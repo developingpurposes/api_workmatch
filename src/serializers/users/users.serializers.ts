@@ -1,6 +1,7 @@
 import { Schema } from "inspector";
 import * as yup from "yup";
 import { SchemaOf } from "yup";
+import { ITechnologyReturn } from "../../interfaces/technologies/technologies.interface";
 import {
   IUser,
   IUserLogin,
@@ -46,7 +47,7 @@ export const responseUserSerializer: SchemaOf<IUser> = yup.object().shape({
   createdAt: yup.date(),
   updatedAt: yup.date(),
   deletedAt: yup.date().nullable(),
-  technologies: yup.array().notRequired(),
+  usersTechs: yup.array().nullable().notRequired(),
 });
 
 export const listUsersSerializer = yup.array(responseUserSerializer);
