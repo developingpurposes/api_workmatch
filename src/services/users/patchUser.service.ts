@@ -1,57 +1,7 @@
-/* import AppDataSource from "../../data-source";
-import { Users } from "../../entities/users.entity";
-import { AppError } from "../../errors/appError";
-import { IUser, IUserUpdate } from "../../interfaces/users/user.interface";
-import { responseUserSerializer } from "../../serializers/users/users.serializers";
 
-export const patchUserService = async (
-  newData: IUserUpdate,
-  userId: string,
-  patchUserId: string
-) => {
-  const userRepository = AppDataSource.getRepository(Users);
-
-  const patchProfile = await userRepository.findOneBy({
-    id: patchUserId,
-  });
-
-  if (!patchProfile) {
-    throw new AppError("User not found!", 404);
-  }
-
-  const myProfile = await userRepository.findOneBy({
-    id: userId,
-  });
-
-  if (myProfile.id !== patchProfile.id && !myProfile.isAdm) {
-    throw new AppError("Missing admin permissions", 401);
-  }
-
-  const updatedUser = userRepository.create({
-    ...patchProfile,
-    ...newData,
-  });
-  await userRepository.save(updatedUser);
-
-  userRepository.update;
-
-  const responseUpdatedUser = await responseUserSerializer.validate(
-    updatedUser,
-    {
-      stripUnknown: true,
-      abortEarly: false,
-    }
-  );
-
-  return responseUpdatedUser;
-}; */
-
-import { Projects } from "../../entities/projects.entity";
 import dataSource from "../../data-source";
 import { AppError } from "../../errors/appError";
 import { In } from "typeorm";
-import { IProjectUpdate } from "../../interfaces/projects/projects.interface";
-import { Projects_technologies } from "../../entities/projects_technologies";
 import { Technologies } from "../../entities/technologies.entity";
 import { IUserUpdate } from "../../interfaces/users/user.interface";
 import { Users } from "../../entities/users.entity";
@@ -106,13 +56,13 @@ export const patchUserService = async (
   await userRepository.save(updateUser);
 
   if (technologiesIds.length) {
-    const techsSeach = await technologyRepository.find({
+    const techsSearch = await technologyRepository.find({
       where: {
         id: In(technologiesIds),
       },
     });
 
-    if (!techsSeach.length) {
+    if (!techsSearch.length) {
       throw new AppError("Technologies is not found!", 404);
     }
 
@@ -122,7 +72,7 @@ export const patchUserService = async (
       .where({ user: patchUserId })
       .execute();
 
-    techsSeach.forEach(async (newTechlogy) => {
+    techsSearch.forEach(async (newTechlogy) => {
       const userTechsResponse = userTechsRepository.create({});
 
       await userTechsRepository.save(userTechsResponse);

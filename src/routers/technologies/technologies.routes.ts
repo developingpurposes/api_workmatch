@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createdTechnologiesController } from "../../controllers/technologies/createdTechnologies.controller";
+import { createTechnologiesController } from "../../controllers/technologies/createdTechnologies.controller";
 import { deleteTechnologiesController } from "../../controllers/technologies/deleteTechnologies.controller";
 import { listAllTechnologiesController } from "../../controllers/technologies/listAllTechnologies.controller";
 import { updateTechnologiesController } from "../../controllers/technologies/updateTechnologies.controller";
@@ -10,25 +10,25 @@ import { ensureTechnologyIsExistMiddleware } from "../../middlewares/ensureTechn
 import { ensureAuthMiddleware } from "../../middlewares/esureAuth.middleware";
 import { createdSerializerTechnologies, updateSerializerTechnologies } from "../../serializers/technologies/technologies.serializer";
 
-export const techlogiesRoutes = Router()
+export const technologiesRoutes = Router()
 
 
-techlogiesRoutes.post("",
+technologiesRoutes.post("",
      ensureAuthMiddleware,
      ensureIsAdminMiddleware,
      ensureDataIsValidMiddleware(createdSerializerTechnologies),
      ensureTechnologyIsExistMiddleware,
-     createdTechnologiesController
+     createTechnologiesController
 )
 
 
-techlogiesRoutes.get("",
+technologiesRoutes.get("",
      ensureAuthMiddleware,
      listAllTechnologiesController
 )
 
 
-techlogiesRoutes.patch("/:id",
+technologiesRoutes.patch("/:id",
      ensureAuthMiddleware,
      ensureIsAdminMiddleware,
      ensureTechnologyIdIsValidMiddleware,
@@ -38,7 +38,7 @@ techlogiesRoutes.patch("/:id",
 )
 
 
-techlogiesRoutes.delete("/:id",
+technologiesRoutes.delete("/:id",
      ensureAuthMiddleware,
      ensureIsAdminMiddleware,
      ensureTechnologyIdIsValidMiddleware,

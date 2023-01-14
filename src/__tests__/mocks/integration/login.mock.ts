@@ -1,4 +1,4 @@
-import { IUserLogin, IUserRequestAdmin } from "../../../interfaces/users/user.interface";
+import { IUserLogin } from "../../../interfaces/users/user.interface";
 
 export const mockedLoginRequest: IUserLogin = {
   email: "fabio@mail.com",

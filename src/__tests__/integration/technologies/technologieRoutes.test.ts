@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
 import { mockedAdminLoginRequest } from "../../mocks/integration/login.mock";
-import { mockedCreateTechnology } from "../../mocks/integration/technologie.mock";
+import { mockedCreateTechnology } from "../../mocks/integration/technology.mock";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
@@ -70,7 +70,7 @@ describe("/technologies", () => {
     const techs = await request(app)
       .get("/technologies")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-      
+
     const response = await request(app)
       .patch(`/technologies/${techs.body[0].id}`)
       .send({
