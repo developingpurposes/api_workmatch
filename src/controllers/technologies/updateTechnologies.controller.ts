@@ -7,6 +7,6 @@ export const updateTechnologiesController = async (request:Request, response:Res
      const idTechnology = request.params.id
      const updateTechnology = await updateTechnologiesService(updateDateTechnology,idTechnology)
 
-     return response.status(201).json(updateTechnology)
+     return response.status(200).json(updateTechnology)
 
 }

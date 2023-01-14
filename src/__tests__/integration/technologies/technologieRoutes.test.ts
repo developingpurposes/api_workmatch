@@ -59,16 +59,18 @@ describe("/technologies", () => {
       .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 
   test("PATCH /technologies, Admin should be able to edit Technology", async () => {
-    await request(app).post("/users").send(mockedAdminUserCreate);
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-    const techs = await request(app).get("/technologies");
 
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+      
     const response = await request(app)
       .patch(`/technologies/${techs.body[0].id}`)
       .send({
