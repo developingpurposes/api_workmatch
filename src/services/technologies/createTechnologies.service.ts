@@ -5,13 +5,13 @@ import {
   ITechnologyReturn,
 } from "../../interfaces/technologies/technologies.interface";
 
-export const createdTechnologiesService = async (
+export const createTechnologiesService = async (
   technologiesData: ICreatedTechnology
 ): Promise<ITechnologyReturn> => {
-  const techlogiesRepository = dataSource.getRepository(Technologies);
+  const technologiesRepository = dataSource.getRepository(Technologies);
 
-  const createdTechlogie = techlogiesRepository.create(technologiesData);
-  await techlogiesRepository.save(createdTechlogie);
+  const createTechnologies = technologiesRepository.create(technologiesData);
+  await technologiesRepository.save(createTechnologies);
 
-  return createdTechlogie;
+  return createTechnologies;
 };

@@ -10,7 +10,7 @@ import {
   invalidMockedProjectCreate,
   mockedProjectCreate,
 } from "../../mocks/integration/project.mock";
-import { mockedCreateTechnology } from "../../mocks/integration/technologie.mock";
+import { mockedCreateTechnology } from "../../mocks/integration/technology.mock";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
