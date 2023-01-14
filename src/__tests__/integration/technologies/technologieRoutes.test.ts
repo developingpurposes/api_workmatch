@@ -2,7 +2,7 @@ import request from "supertest";
 import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
-import { mockedAdminLoginRequest } from "../../mocks/integration/login.mock";
+import { mockedAdminLoginRequest, mockedLoginRequest } from "../../mocks/integration/login.mock";
 import { mockedCreateTechnology } from "../../mocks/integration/technology.mock";
 import {
   mockedAdminUserCreate,
