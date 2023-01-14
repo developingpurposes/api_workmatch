@@ -31,7 +31,7 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
-  technologies?: string[];
+  usersTechs?: string[];
 }
 
 export interface IUserUpdate {
