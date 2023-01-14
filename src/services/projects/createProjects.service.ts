@@ -66,5 +66,11 @@ export const createProjectsServices = async (
     );
   });
 
-  return projectResponse;
+  const project = {
+    ...projectResponse,
+    ownerId: newProject.ownerId,
+    technologies: techsSearch,
+  };
+
+  return project;
 };

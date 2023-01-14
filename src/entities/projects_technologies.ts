@@ -7,9 +7,9 @@ export class Projects_technologies {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Projects, (projects) => projects.projectTech)
+  @ManyToOne(() => Projects, (projects) => projects.projectTechs)
   projects: Projects;
 
-  @ManyToOne(() => Technologies, (technologies) => technologies.projectTech)
+  @ManyToOne(() => Technologies, (technologies) => technologies.projectTechs)
   technologies: Technologies;
 }
