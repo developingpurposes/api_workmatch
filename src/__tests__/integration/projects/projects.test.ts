@@ -10,7 +10,7 @@ import {
   invalidMockedProjectCreate,
   mockedProjectCreate,
 } from "../../mocks/integration/project.mock";
-import { mockedCreateTechnology } from "../../mocks/integration/technologie.mock";
+import { mockedCreateTechnology } from "../../mocks/integration/technology.mock";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
@@ -39,6 +39,7 @@ describe("/login", () => {
     const registerResponse = await request(app)
       .post("/users")
       .send(mockedAdminUserCreate);
+
     const loginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -48,7 +49,6 @@ describe("/login", () => {
       .send(mockedCreateTechnology)
       .set("Authorization", `Bearer ${loginResponse.body.token}`);
 
-    mockedProjectCreate.ownerId = registerResponse.body.id;
     mockedProjectCreate.technologies = [`${technologies.body.id}`];
 
     const response = await request(app)
@@ -65,7 +65,7 @@ describe("/login", () => {
     expect(response.body).toHaveProperty("createdAt");
     expect(response.body).toHaveProperty("updatedAt");
     expect(response.body).toHaveProperty("onwerId");
-    expect(response.body).toHaveProperty("projectTech");
+    expect(response.body).toHaveProperty("projectTechs");
 
     expect(response.body.projectTech.length).toEqual(1);
     expect(response.body.isActive).toEqual(true);
@@ -126,7 +126,7 @@ describe("/login", () => {
     expect(response.status).toBe(200);
   });
 
-  test("GET /projects, should not be able to list projects without authentication", async () => {
+  test("GET /projects, Should not be able to list projects without authentication", async () => {
     const response = await request(app).get("/projects");
 
     expect(response.body).toHaveProperty("message");

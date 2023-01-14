@@ -13,7 +13,6 @@ export const createProjectsServices = async (
   const technologiesIds = newProject.technologies;
   delete newProject.technologies;
 
-  console.log(newProject.ownerId);
   const userRepository = dataSource.getRepository(Users);
 
   const projectTechsRepository = dataSource.getRepository(

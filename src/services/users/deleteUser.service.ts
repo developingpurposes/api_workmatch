@@ -5,24 +5,20 @@ import { AppError } from "../../errors/appError";
 export const deleteUserService = async (
   deleteUserId: string
 ): Promise<void> => {
-  try {
-    const userRepository = AppDataSource.getRepository(Users);
+  const userRepository = AppDataSource.getRepository(Users);
 
-    const user = await userRepository.findOne({
-      where: { id: deleteUserId },
-      withDeleted: true,
-    });
+  const user = await userRepository.findOne({
+    where: { id: deleteUserId },
+    withDeleted: true,
+  });
 
-    if (!user) {
-      throw new AppError("Invalid id!", 404);
-    }
-
-    if (!user.isActive) {
-      throw new AppError("User is already inactive", 400);
-    }
-
-    await userRepository.softRemove(user);
-  } catch (error) {
-    throw new AppError(error.message, 400);
+  if (!user) {
+    throw new AppError("Invalid id!", 404);
   }
+
+  if (!user.isActive) {
+    throw new AppError("User is already inactive", 400);
+  }
+
+  await userRepository.softRemove(user);
 };

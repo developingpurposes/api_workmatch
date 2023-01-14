@@ -18,8 +18,8 @@ export const createdSerializerProjects: yup.SchemaOf<IProjectRequest> = yup
 export const updateSerializerProjects: yup.SchemaOf<IProjectUpdate> = yup
   .object()
   .shape({
-    name: yup.string().max(50),
-    imgUrl: yup.string(),
-    description: yup.string(),
-    technologies: yup.array(),
+    name: yup.string().max(50).notRequired(),
+    imgUrl: yup.string().notRequired(),
+    description: yup.string().notRequired(),
+    technologies: yup.array().notRequired(),
   });
