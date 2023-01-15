@@ -226,13 +226,12 @@ describe("/users", () => {
       .set("Authorization", `Bearer ${loginResponse.body.token}`)
       .send({
         email: "updatetest99@mail.com",
-        username: "updatedfabinho"
+        username: "updatedfabinho",
       });
-
 
     expect(updateResponse.status).toBe(200);
     expect(updateResponse.body.email).toBe("updatetest99@mail.com");
-    expect(updateResponse.body.username).toBe("updatedfabinho")
+    expect(updateResponse.body.username).toBe("updatedfabinho");
   });
 
   test("DELETE /users, Should not be able to delete user without authentication", async () => {
@@ -260,7 +259,7 @@ describe("/users", () => {
       .get("/users")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-      const loginResponse = await request(app)
+    const loginResponse = await request(app)
       .post("/login")
       .send(mockedLoginRequest);
 
@@ -268,7 +267,7 @@ describe("/users", () => {
       .delete(`/users/${userTobeDeleted.body[1].id}`)
       .set("Authorization", `Bearer ${loginResponse.body.token}`);
 
-    expect(response.status).toBe(403)
+    expect(response.status).toBe(403);
     expect(response.body).toHaveProperty("message");
   });
 
@@ -293,20 +292,19 @@ describe("/users", () => {
     const userTobeDeleted = await request(app)
       .get("/users")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-      
-      const response = await request(app)
+
+    const response = await request(app)
       .delete(`/users/${userTobeDeleted.body[1].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-      expect(response.status).toBe(403);
-      expect(response.body).toHaveProperty("message");
-    });
-    
-    test("DELETE /users, Should not be able to delete user with invalid id", async () => {
-      const adminLoginResponse = await request(app)
+    expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("DELETE /users, Should not be able to delete user with invalid id", async () => {
+    const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-      console.log(adminLoginResponse.body)
-      
+
     const response = await request(app)
       .delete("/users/1")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
