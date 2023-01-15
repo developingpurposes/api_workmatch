@@ -17,8 +17,10 @@ export const deleteUserService = async (
   }
 
   if (!user.isActive) {
-    throw new AppError("User is already inactive", 400);
+    throw new AppError("User is already inactive", 403);
   }
 
   await userRepository.softRemove(user);
+  await userRepository.save({...user, isActive: false});
+
 };
