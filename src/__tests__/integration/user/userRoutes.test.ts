@@ -91,11 +91,12 @@ describe("/users", () => {
     expect(response.status).toBe(403);
   });
 
-  test("GET /users/:id -  must be able to list user by Id", async () => {
+  test("GET /users/:id -  Must be able to list user by Id", async () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-    const users = await request(app).get("/users");
+    const users = await request(app).get("/users").set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+    console.log(users.body)
     const response = await request(app)
       .get(`/users/${users.body[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
