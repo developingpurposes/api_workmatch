@@ -276,12 +276,12 @@ describe("/users", () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-    const UserTobeDeleted = await request(app)
+    const userTobeDeleted = await request(app)
       .get("/users")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     const response = await request(app)
-      .delete(`/users/${UserTobeDeleted.body[0].id}`)
+      .delete(`/users/${userTobeDeleted.body[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
     expect(response.status).toBe(204);
   });
@@ -293,19 +293,20 @@ describe("/users", () => {
     const userTobeDeleted = await request(app)
       .get("/users")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-
-    const response = await request(app)
-      .delete(`/users/${userTobeDeleted.body[0].id}`)
+      
+      const response = await request(app)
+      .delete(`/users/${userTobeDeleted.body[1].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    expect(response.status).toBe(403);
-    expect(response.body).toHaveProperty("message");
-  });
-
-  test("DELETE /users, Should not be able to delete user with invalid id", async () => {
-    const adminLoginResponse = await request(app)
+      expect(response.status).toBe(403);
+      expect(response.body).toHaveProperty("message");
+    });
+    
+    test("DELETE /users, Should not be able to delete user with invalid id", async () => {
+      const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-
+      console.log(adminLoginResponse.body)
+      
     const response = await request(app)
       .delete("/users/1")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
