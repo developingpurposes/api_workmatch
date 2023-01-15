@@ -1,12 +1,11 @@
 import { Request,Response } from "express";
-import { createdTechnologiesService } from "../../services/technologies/createdTechnologies.service";
+import { createTechnologiesService } from "../../services/technologies/createTechnologies.service";
 
 
-export const createdTechnologiesController = async (request:Request , response:Response) => {
+export const createTechnologiesController = async (request:Request , response:Response) => {
      const technologiesData = request.body
 
-     console.log(technologiesData)
-     const techlogiesCreated = await createdTechnologiesService(technologiesData)
+     const technologiesCreated = await createTechnologiesService(technologiesData)
      
-     return response.status(201).json(techlogiesCreated)
+     return response.status(201).json(technologiesCreated)
 }

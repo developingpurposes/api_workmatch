@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Projects_technologies } from "./projects_technologies";
 import { Users_technologies } from "./users_technologies.entity";
 
@@ -10,7 +18,7 @@ export class Technologies {
   @Column({ length: 50 })
   name: string;
 
-  @Column({ length: 50 })
+  @Column()
   icon: string;
 
   @CreateDateColumn()
@@ -25,6 +33,9 @@ export class Technologies {
   @OneToMany(() => Users_technologies, (userTechs) => userTechs.technologies)
   userTechs: Users_technologies[];
 
-  @OneToMany(() => Projects_technologies, (userTechs) => userTechs.technologies)
-  projectTech: Projects_technologies[];
+  @OneToMany(
+    () => Projects_technologies,
+    (projectTechs) => projectTechs.technologies
+  )
+  projectTechs: Projects_technologies[];
 }

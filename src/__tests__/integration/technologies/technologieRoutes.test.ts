@@ -2,8 +2,8 @@ import request from "supertest";
 import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
-import { mockedAdminLoginRequest } from "../../mocks/integration/login.mock";
-import { mockedCreateTechnology } from "../../mocks/integration/technologie.mock";
+import { mockedAdminLoginRequest, mockedLoginRequest } from "../../mocks/integration/login.mock";
+import { mockedCreateTechnology } from "../../mocks/integration/technology.mock";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
@@ -59,15 +59,17 @@ describe("/technologies", () => {
       .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 
   test("PATCH /technologies, Admin should be able to edit Technology", async () => {
-    await request(app).post("/users").send(mockedAdminUserCreate);
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-    const techs = await request(app).get("/technologies");
+
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     const response = await request(app)
       .patch(`/technologies/${techs.body[0].id}`)
@@ -81,4 +83,36 @@ describe("/technologies", () => {
     expect(response.body.icon).toBe("http://reactNative.com");
     expect(response.status).toBe(200);
   });
+
+  test("DELETE /technologies:id, User should not be possible to delete Technology", async () => {
+    await request(app).post("/users").send(mockedUserCreate);
+    const userLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedLoginRequest);
+    const techs = await request(app).get("/technologies").set("Authorization", `Bearer ${userLoginResponse.body.token}`);
+
+    const response = await request(app)
+      .delete(`/technologies/${techs.body[0].id}`)
+      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("DELETE /technologies:id, Admin should be possible to delete Technology", async () => {
+    const adminLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedAdminLoginRequest);
+    const techs = await request(app).get("/technologies").set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+    const response = await request(app)
+    .delete(`/technologies/${techs.body[0].id}`)
+    .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+    
+    const deletedTech = await request(app).get("/technologies").set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+    expect(response.status).toBe(204);
+    expect(deletedTech.body).not.toHaveLength(1);
+  });
+
+
 });
