@@ -40,6 +40,8 @@ userRoutes.patch(
   "/:id",
   ensureAuthMiddleware,
   ensureUpdateDataIsRightMiddleware,
+  ensureUserIdIsValidMiddleware,
+  ensureIsAdminMiddleware,
   ensureDataIsValidMiddleware(updateSerializerProjects),
   patchUserController
 );
@@ -47,5 +49,6 @@ userRoutes.delete(
   "/:id",
   ensureAuthMiddleware,
   ensureIsAdminMiddleware,
+  ensureUserIdIsValidMiddleware,
   deleteUserController
 );
