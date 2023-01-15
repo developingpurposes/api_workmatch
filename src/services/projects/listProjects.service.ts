@@ -43,6 +43,7 @@ export const listsProjectsServices = async (
     .orderBy("projects.createdAt", "DESC")
     .take(limit)
     .skip(skip)
+    .withDeleted()
     .getMany();
 
   const validatedData: IProject[] = await listSerializerProjects.validate(
