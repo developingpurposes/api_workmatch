@@ -6,6 +6,7 @@ export const listUserService = async (): Promise<IUser[]> => {
   const users = await dataSource
     .createQueryBuilder()
     .from(Users, "users")
+    .withDeleted()
     .select([
       "users.id",
       "users.email",
