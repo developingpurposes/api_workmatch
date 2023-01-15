@@ -95,8 +95,9 @@ describe("/users", () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-    const users = await request(app).get("/users").set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    console.log(users.body)
+    const users = await request(app)
+      .get("/users")
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
     const response = await request(app)
       .get(`/users/${users.body[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
@@ -130,12 +131,13 @@ describe("/users", () => {
   });
 
   test("POST /users, Should not be able to update without authentication", async () => {
-    const loginResponse = await request(app)
+    const adminLoginResponse = await request(app)
       .post("/login")
-      .send(mockedLoginRequest);
+      .send(mockedAdminLoginRequest);
     const userToUpdate = await request(app)
       .get("/users")
-      .set("Authorization", `Bearer ${loginResponse.body.token}`);
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
     const response = await request(app).patch(
       `/users/${userToUpdate.body[0].id}`
     );
