@@ -23,10 +23,11 @@ export const listUserService = async (): Promise<IUser[]> => {
       "users.createdAt",
       "users.updatedAt",
       "users.deletedAt",
-      "userTechs.technologies",
+      "technologies.id",
     ])
     .leftJoinAndSelect("users.userTechs", "userTechs")
     .leftJoinAndSelect("userTechs.technologies", "technologies")
+
     .getMany();
 
   return users;

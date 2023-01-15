@@ -8,7 +8,21 @@ export const getUserService = async (userId: string): Promise<IUser> => {
   const user = await dataSource
     .createQueryBuilder()
     .from(Users, "users")
-    .select("users")
+    .select([
+      "users.id",
+      "users.email",
+      "users.username",
+      "users.name",
+      "users.avatarUrl",
+      "users.bio",
+      "users.contact",
+      "users.isActive",
+      "users.isAdm",
+      "users.createdAt",
+      "users.updatedAt",
+      "users.deletedAt",
+      "technologies",
+    ])
     .leftJoinAndSelect("users.userTechs", "userTechs")
     .leftJoinAndSelect("userTechs.technologies", "technologies")
     .where({
