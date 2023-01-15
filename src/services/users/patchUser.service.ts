@@ -1,4 +1,3 @@
-
 import dataSource from "../../data-source";
 import { AppError } from "../../errors/appError";
 import { In } from "typeorm";
@@ -9,10 +8,13 @@ import { Users_technologies } from "../../entities/users_technologies.entity";
 
 export const patchUserService = async (
   newData: IUserUpdate,
-  userId: string,
   patchUserId: string
 ) => {
-  const technologiesIds = newData.technologies;
+  let technologiesIds = newData.technologies;
+
+  if (technologiesIds == undefined) {
+    technologiesIds = [];
+  }
 
   const userRepository = dataSource.getRepository(Users);
   const userTechsRepository = dataSource.getRepository(Users_technologies);
@@ -22,35 +24,10 @@ export const patchUserService = async (
     id: patchUserId,
   });
 
-  if (!patchProfile) {
-    throw new AppError("User not found!", 404);
-  }
-
-  const myProfile = await userRepository.findOneBy({
-    id: userId,
-  });
-
-  if (myProfile.id !== patchProfile.id && !myProfile.isAdm) {
-    throw new AppError("Missing admin permissions", 401);
-  }
-
-  const projectResponse = await userRepository.find({
-    withDeleted: true,
-    where: { id: patchUserId },
-  });
-
-  if (!projectResponse.length) {
-    throw new AppError("Updating user is not allowed", 404);
-  }
-
-  if (!Object.keys(newData).length) {
-    throw new AppError("Updating user is not allowed", 401);
-  }
-
   delete newData.technologies;
 
   const updateUser = userRepository.create({
-    ...projectResponse[0],
+    ...patchProfile,
     ...newData,
   });
   await userRepository.save(updateUser);
@@ -80,7 +57,7 @@ export const patchUserService = async (
       await userTechsRepository.update(
         { id: userTechsResponse.id },
         {
-          user: projectResponse[0],
+          user: patchProfile,
           technologies: newTechlogy,
         }
       );

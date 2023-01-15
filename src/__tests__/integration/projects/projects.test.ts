@@ -16,7 +16,7 @@ import {
   mockedUserCreate,
 } from "../../mocks/integration/user.mocks";
 
-describe("/login", () => {
+describe("/project", () => {
   let connection: DataSource;
 
   beforeAll(async () => {

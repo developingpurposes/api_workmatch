@@ -157,12 +157,12 @@ describe("/users", () => {
     const token = `Bearer ${loginResponse.body.token}`;
 
     const response = await request(app)
-      .patch(`/users/91792517-9ght-167a-4e9h-nn0ca67f8h`)
+      .patch(`/users/olhaotesteeeeee`)
       .set("Authorization", token)
       .send(newData);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
   });
 
   test("PATCH /users, Should not be able to update another user without admin permission", async () => {
@@ -296,7 +296,7 @@ describe("/users", () => {
     const response = await request(app)
       .delete(`/users/${userTobeDeleted.body[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-      
+
     expect(response.status).toBe(403);
     expect(response.body).toHaveProperty("message");
   });
@@ -310,7 +310,7 @@ describe("/users", () => {
       .delete("/users/1")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("message");
   });
 });
