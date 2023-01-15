@@ -3,12 +3,14 @@ import { app } from "../../../app";
 import { DataSource } from "typeorm";
 import {
   mockedAdminUserCreate,
+  mockedUpdateUserCreate,
   mockedUserCreate,
 } from "../../mocks/integration/user.mocks";
 import AppDataSource from "../../../data-source";
 import {
   mockedAdminLoginRequest,
   mockedLoginRequest,
+  mockedLoginUpdateUserRequest,
 } from "../../mocks/integration/login.mock";
 
 describe("/users", () => {
@@ -130,7 +132,7 @@ describe("/users", () => {
     expect(response.status).toBe(404);
   });
 
-  test("POST /users, Should not be able to update without authentication", async () => {
+  test("PATCH /users, Should not be able to update without authentication", async () => {
     const adminLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -146,7 +148,7 @@ describe("/users", () => {
     expect(response.status).toBe(401);
   });
 
-  test("POST /users, Should not be able to update with invalid id", async () => {
+  test("PATCH /users, Should not be able to update with invalid id", async () => {
     const newData = { name: "Teste", email: "teste@mail.com" };
 
     const loginResponse = await request(app)
@@ -188,13 +190,13 @@ describe("/users", () => {
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /users, Should be able to update Adm credential", async () => {
+  test("PATCH /users, Should not be able to update Adm credential", async () => {
     const newAdmValue = { isAdm: true };
 
-    const loginResponse = await request(app)
+    const adminLoginResponse = await request(app)
       .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
+      .send(mockedAdminLoginRequest);
+    const token = `Bearer ${adminLoginResponse.body.token}`;
 
     const userToUpdate = await request(app)
       .get("/users")
@@ -210,33 +212,27 @@ describe("/users", () => {
   });
 
   test("PATCH /users, Should be able to update user", async () => {
-    const newData = { name: "Teste", email: "teste@mail.com" };
-    const randomUser = {
-      name: "asdpfok",
-      email: "teste22@mail.com",
-      password: "1234",
-    };
-    const randomUserLogin = { email: "teste22@mail.com", password: "1234" };
-
-    const userToUpdate = await request(app).post("/users").send(randomUser);
+    // ????????????????????????
+    const userToUpdate = await request(app)
+      .post("/users")
+      .send(mockedUpdateUserCreate);
 
     const loginResponse = await request(app)
       .post("/login")
-      .send(randomUserLogin);
-    const token = `Bearer ${loginResponse.body.token}`;
+      .send(mockedLoginUpdateUserRequest);
 
-    const response = await request(app)
+    const updateResponse = await request(app)
       .patch(`/users/${userToUpdate.body.id}`)
-      .set("Authorization", token)
-      .send(newData);
+      .set("Authorization", `Bearer ${loginResponse.body.token}`)
+      .send({
+        email: "updatetest99@mail.com",
+        username: "updatedfabinho"
+      });
 
-    const updatedUser = await request(app)
-      .get(`/users/${userToUpdate.body.id}`)
-      .set("Authorization", token);
 
-    expect(response.status).toBe(200);
-    expect(updatedUser.body[0].name).toEqual("Teste");
-    expect(updatedUser.body[0]).not.toHaveProperty("password");
+    expect(updateResponse.status).toBe(200);
+    expect(updateResponse.body.email).toBe("updatetest99@mail.com");
+    expect(updateResponse.body.username).toBe("updatedfabinho")
   });
 
   test("DELETE /users, Should not be able to delete user without authentication", async () => {
@@ -256,19 +252,24 @@ describe("/users", () => {
   });
 
   test("DELETE /users, Should not be able to delete user not being admin", async () => {
-    const userLoginResponse = await request(app)
+    const adminLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedAdminLoginRequest);
+
+    const userTobeDeleted = await request(app)
+      .get("/users")
+      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+
+      const loginResponse = await request(app)
       .post("/login")
       .send(mockedLoginRequest);
 
-    const UserTobeDeleted = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
-
     const response = await request(app)
-      .delete(`/users/${UserTobeDeleted.body[0].id}`)
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
+      .delete(`/users/${userTobeDeleted.body[1].id}`)
+      .set("Authorization", `Bearer ${loginResponse.body.token}`);
 
-    expect(response.body).toHaveLength(1);
+    expect(response.status).toBe(403)
+    expect(response.body).toHaveProperty("message");
   });
 
   test("DELETE /users, Should be able to soft delete user", async () => {
