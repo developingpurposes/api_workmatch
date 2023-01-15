@@ -6,13 +6,15 @@ import {
 } from "../../interfaces/projects/projects.interface";
 import { listSerializerProjects } from "../../serializers/projects/projects.serializer";
 
-export const listsProjectsServices = async (
+export const listUserProjectsServices = async (
   limit: number,
-  page: number
+  page: number,
+  ownerId: string
 ): Promise<IProjectResponse> => {
   const count = await dataSource
     .createQueryBuilder(Projects, "projects")
     .select("COUNT(projects.id)")
+    .where("projects.ownerId = :ownerId", { ownerId: ownerId })
     .getCount();
 
   const totalPages: number = Math.ceil(count / limit);
@@ -40,6 +42,7 @@ export const listsProjectsServices = async (
     .select(["projects", "owner"])
     .leftJoinAndSelect("projects.projectTechs", "projectTechs")
     .leftJoinAndSelect("projectTechs.technologies", "technologies")
+    .where("projects.owner = :owner", { owner: ownerId })
     .orderBy("projects.createdAt", "DESC")
     .take(limit)
     .skip(skip)

@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { QueryFailedError } from "typeorm";
 import { ValidationError } from "yup";
 import { AppError } from "./appError";
 
@@ -15,21 +14,13 @@ export const handleError = async (
     });
   }
 
-  /*   if (error.message.includes("invalid input syntax")) {
+  if (error.message.includes("invalid input syntax")) {
     return res.status(404).json({ message: "invalid input syntax" });
   }
 
   if (error instanceof ValidationError) {
     return res.status(400).json({ message: error.errors });
   }
-
-  if (error instanceof QueryFailedError) {
-    return res.status(404).json({ message: "Action not authorization!" });
-  }
-
-  if (error instanceof TypeError) {
-    return res.status(403).json({ message: "Email or password not found!" });
-  } */
 
   console.error(error);
 

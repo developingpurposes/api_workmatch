@@ -1,3 +1,12 @@
+import { IUpdateTechnology } from "../technologies/technologies.interface";
+import { IUserUpdate } from "../users/user.interface";
+
+export interface IProjectResponse {
+  nextPage: string;
+  previousPage: string;
+  totalPages: number;
+  projects: IProject[];
+}
 export interface IProject {
   id: string;
   name: string;
@@ -8,8 +17,24 @@ export interface IProject {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
-  ownerId: string;
-  technologies: string[];
+  owner: IOwner;
+  projectTechs: IProjectTechs[];
+}
+
+interface IOwner {
+  id: string;
+  email: string;
+  name: string;
+  avatarUrl?: string;
+  level?: string;
+  contact?: string;
+}
+
+interface IProjectTechs {
+  technologies: {
+    icon: string;
+    name: string;
+  };
 }
 
 export interface IProjectUpdate {
