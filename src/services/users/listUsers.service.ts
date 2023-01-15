@@ -1,10 +1,6 @@
 import dataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
 import { IUser } from "../../interfaces/users/user.interface";
-import {
-  responseUserSerializer,
-  updatedUserSerializer,
-} from "../../serializers/users/users.serializers";
 
 export const listUserService = async (): Promise<IUser[]> => {
   const users = await dataSource
