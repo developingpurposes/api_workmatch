@@ -12,13 +12,16 @@ export const deleteUserService = async (
     withDeleted: true,
   });
 
+  console.log(deleteUserId);
+
   if (!user) {
     throw new AppError("Invalid id!", 404);
   }
 
   if (!user.isActive) {
-    throw new AppError("User is already inactive", 400);
+    throw new AppError("User is already inactive", 403);
   }
 
   await userRepository.softRemove(user);
+  await userRepository.save({ ...user, isActive: false });
 };

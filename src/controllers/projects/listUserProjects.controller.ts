@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { listsProjectsServices } from "../../services/projects/listProjects.service";
+import { listUserProjectsServices } from "../../services/projects/listUserProjects.service";
 
-export const listsProjectsController = async (
+export const listUserProjectsController = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
@@ -9,7 +9,9 @@ export const listsProjectsController = async (
 
   const limit: number = Number(req.query.limit) || 10;
 
-  const data = await listsProjectsServices(limit, page);
+  const ownerId: string = req.params.id;
+
+  const data = await listUserProjectsServices(limit, page, ownerId);
 
   return res.status(200).json(data);
 };
