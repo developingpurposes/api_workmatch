@@ -1,7 +1,7 @@
 import dataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
 import { IUser } from "../../interfaces/users/user.interface";
-import { responseUserSerializer } from "../../serializers/users/users.serializers";
+import { userListSerializer } from "../../serializers/users/users.serializers";
 
 export const getUserService = async (userId: string): Promise<IUser> => {
   const user = await dataSource
@@ -15,9 +15,10 @@ export const getUserService = async (userId: string): Promise<IUser> => {
     })
     .getOne();
 
-  const userWithoutPassword = await responseUserSerializer.validate(user, {
+  const userResponse = await userListSerializer.validate(user, {
     stripUnknown: true,
+    abortEarly: false,
   });
 
-  return userWithoutPassword;
+  return userResponse;
 };

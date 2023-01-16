@@ -10,7 +10,10 @@ import { deleteUserController } from "../../controllers/users/deleteUser.control
 import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
 import { updateSerializerProjects } from "../../serializers/projects/projects.serializer";
 import { ensureTechnologyMiddleware } from "../../middlewares/ensureTechnology.middleware";
-import { responseUserSerializer } from "../../serializers/users/users.serializers";
+import {
+  responseUserSerializer,
+  updatedUserSerializer,
+} from "../../serializers/users/users.serializers";
 import { Users } from "../../entities/users.entity";
 import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
 
@@ -40,9 +43,10 @@ userRoutes.get(
 userRoutes.patch(
   "/:id",
   ensureAuthMiddleware,
-  ensureUpdateDataIsRightMiddleware,
   ensureIdIsValidMiddleware(Users),
-  ensureDataIsValidMiddleware(updateSerializerProjects),
+  ensureUpdateDataIsRightMiddleware,
+  ensureIsAdminMiddleware,
+  ensureDataIsValidMiddleware(updatedUserSerializer),
   patchUserController
 );
 userRoutes.delete(

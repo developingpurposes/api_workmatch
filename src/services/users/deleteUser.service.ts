@@ -12,6 +12,7 @@ export const deleteUserService = async (
     withDeleted: true,
   });
 
+
   if (!user) {
     throw new AppError("Invalid id!", 404);
   }
@@ -21,6 +22,5 @@ export const deleteUserService = async (
   }
 
   await userRepository.softRemove(user);
-  await userRepository.save({...user, isActive: false});
-
+  await userRepository.save({ ...user, isActive: false });
 };
