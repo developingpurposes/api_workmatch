@@ -28,6 +28,18 @@ export const joinQueueProjectsServices = async (
     throw new AppError("User already joined in the queue!", 409);
   }
 
+  const findUser = await projectRepository.findOne({
+    where: { id: projectId },
+    relations: {
+      owner: true,
+    },
+  });
+
+
+  if (findUser.owner.id == userId) {
+    throw new AppError("You can't join on your own project", 409);
+  }
+
   const userExist = await userRepository.findOne({
     where: { id: userId },
   });

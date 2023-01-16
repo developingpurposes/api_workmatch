@@ -5,6 +5,7 @@ import { Technologies } from "../../entities/technologies.entity";
 import { IUserUpdate } from "../../interfaces/users/user.interface";
 import { Users } from "../../entities/users.entity";
 import { Users_technologies } from "../../entities/users_technologies.entity";
+import { userListSerializer } from "../../serializers/users/users.serializers";
 
 export const patchUserService = async (
   newData: IUserUpdate,
@@ -26,11 +27,11 @@ export const patchUserService = async (
 
   delete newData.technologies;
 
-  const updateUser = userRepository.create({
+  const updatedUser = userRepository.create({
     ...patchProfile,
     ...newData,
   });
-  await userRepository.save(updateUser);
+  await userRepository.save(updatedUser);
 
   if (technologiesIds.length) {
     const techsSearch = await technologyRepository.find({
@@ -64,5 +65,10 @@ export const patchUserService = async (
     });
   }
 
-  return updateUser;
+  const userResponse = await userListSerializer.validate(updatedUser, {
+    stripUnknown: true,
+    abortEarly: false,
+  });
+
+  return userResponse;
 };
