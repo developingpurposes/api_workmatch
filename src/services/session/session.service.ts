@@ -11,8 +11,9 @@ export const createSessionService = async ({
   password,
 }: IUserLogin): Promise<string> => {
   const userRepository = AppDataSource.getRepository(Users);
-  const user = await userRepository.findOneBy({
-    email: email,
+  const user = await userRepository.findOne({
+    where: { email: email },
+    withDeleted: true,
   });
 
   if (!user) {

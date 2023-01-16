@@ -12,16 +12,17 @@ export const ensureIsOwnerMiddleware = async (
 
   const projectId = req.params.id;
 
-  const projectSeach = await dataSource
+  const projectSearch = await dataSource
     .createQueryBuilder()
     .from(Projects, "projects")
     .leftJoin("projects.owner", "owner")
     .select(["projects", "owner.id"])
     .where("projects.id = :id", { id: projectId })
+    .withDeleted()
     .getOne();
 
-  if (projectSeach.owner.id !== userId) {
-    throw new AppError("User not authorization!", 403);
+  if (projectSearch.owner.id !== userId) {
+    throw new AppError("User not authorization!", 401);
   }
   next();
 };

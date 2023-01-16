@@ -51,3 +51,56 @@ export const responseUserSerializer: SchemaOf<IUser> = yup.object().shape({
 });
 
 export const listUsersSerializer = yup.array(responseUserSerializer);
+
+export const usersListSerializer: yup.SchemaOf<IUser[]> = yup.array().of(
+  yup.object().shape({
+    userTechs: yup.array().of(
+      yup.object({
+        technologies: yup.object({
+          icon: yup.string().required(),
+          name: yup.string().required(),
+        }),
+      })
+    ),
+    id: yup.string(),
+    email: yup.string().email(),
+    username: yup.string(),
+    name: yup.string(),
+    avatarUrl: yup.string().nullable().notRequired(),
+    bio: yup.string().nullable(),
+    level: yup.string().nullable(),
+    contact: yup.string().nullable(),
+    isActive: yup.boolean(),
+    isAdm: yup.boolean(),
+    createdAt: yup.date(),
+    updatedAt: yup.date(),
+    deletedAt: yup.date().nullable(),
+    usersTechs: yup.array().nullable().notRequired(),
+  })
+);
+
+export const userListSerializer: yup.SchemaOf<IUser> =
+  yup.object().shape({
+    userTechs: yup.array().of(
+      yup.object({
+        technologies: yup.object({
+          icon: yup.string().required(),
+          name: yup.string().required(),
+        }),
+      })
+    ),
+    id: yup.string(),
+    email: yup.string().email(),
+    username: yup.string(),
+    name: yup.string(),
+    avatarUrl: yup.string().nullable().notRequired(),
+    bio: yup.string().nullable(),
+    level: yup.string().nullable(),
+    contact: yup.string().nullable(),
+    isActive: yup.boolean(),
+    isAdm: yup.boolean(),
+    createdAt: yup.date(),
+    updatedAt: yup.date(),
+    deletedAt: yup.date().nullable(),
+    usersTechs: yup.array().nullable().notRequired(),
+  });
