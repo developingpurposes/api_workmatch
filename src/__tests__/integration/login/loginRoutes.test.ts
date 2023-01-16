@@ -6,7 +6,10 @@ import {
   mockedAdminLoginRequest,
   mockedLoginRequest,
 } from "../../mocks/integration/login.mock";
-import { mockedAdminUserCreate, mockedUserCreate } from "../../mocks/integration/user.mocks";
+import {
+  mockedAdminUserCreate,
+  mockedUserCreate,
+} from "../../mocks/integration/user.mocks";
 
 describe("/login", () => {
   let connection: DataSource;
@@ -42,20 +45,18 @@ describe("/login", () => {
   });
 
   test("POST /login, Should not be able to login with isActive = false", async () => {
-    await request(app).post("/users").send(mockedAdminUserCreate)
+    const userToDeleteResponse = await request(app)
+      .post("/users")
+      .send(mockedAdminUserCreate);
     const responseAdminLogin = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-    const findUser = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${responseAdminLogin.body.token}`);
     await request(app)
-      .delete(`/users/${findUser.body[1].id}`)
+      .delete(`/users/${userToDeleteResponse.body.id}`)
       .set("Authorization", `Bearer ${responseAdminLogin.body.token}`);
     const response = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
-
     expect(response.body).not.toHaveProperty("token");
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);

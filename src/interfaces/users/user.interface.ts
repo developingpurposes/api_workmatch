@@ -44,3 +44,10 @@ export interface IUserUpdate {
   level?: string;
   technologies?: string[];
 }
+
+export interface IUserResponse {
+  nextPage: string;
+  previousPage: string;
+  totalPages: number;
+  users: IUser[];
+}
