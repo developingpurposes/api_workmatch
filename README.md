@@ -4,7 +4,7 @@
 
 # Documentação da API
 
-## Tabela de Conteúdos
+## Indice
 
 - [Visão Geral](#1-visão-geral)
 - [Diagrama ER](#2-diagrama-er)
@@ -12,8 +12,7 @@
   - [Instalando Dependências](#31-instalando-dependências)
   - [Variáveis de Ambiente](#32-variáveis-de-ambiente)
   - [Migrations](#33-migrations)
-- [Autenticação](#4-autenticação)
-- [Endpoints](#5-endpoints)
+- [Endpoints](#4-endpoints) -[Considerações Finais](#5)
 
 ---
 
@@ -33,13 +32,13 @@ https://backend-workmatch.onrender.com
 
 Integrantes:
 
-- [Davison](https://github.com/davidsonq)
-- [Ana](https://github.com/anaadx)
-- [Felipe](https://github.com/FelipeSiqueiraDev)
-- [Julio](https://github.com/juliomello93)
-- [Rafael](https://github.com/zRafael012)
-- [Dreic](https://github.com/DreicLeal)
-- [Thiago](https://github.com/ThiagoKalac)
+- [Davidson Quaresma](https://github.com/davidsonq)
+- [Ana Duarte](https://github.com/anaadx)
+- [Felipe Siqueira](https://github.com/FelipeSiqueiraDev)
+- [Julio Mello](https://github.com/juliomello93)
+- [Rafael Soares](https://github.com/zRafael012)
+- [Dreic Leal](https://github.com/DreicLeal)
+- [Thiago Rodrigues](https://github.com/ThiagoKalac)
 
 ---
 
@@ -94,15 +93,32 @@ yarn typeorm migration:run -d src/data-source.ts
 ### Rotas e Endpoints
 
 - [Users](#1-users)
+
   - [POST - /users](#11-criação-de-usuário)
   - [GET - /users](#12-listando-usuários)
-  - [GET - /users/:user_id](#13-listar-usuário-por-id)
+  - [GET - /users/:id](#13-listar-usuário-por-id)
   - [PATCH - /users/:id](#12-atualizar-os-dados-do-usuário)
   - [DELETE - /users/:id](#12-deletando-usuário)
 
--[Login](#2-login)
+- [Login](#2-login)
 
-- [POST /login]()
+  - [POST /login](#21-realizando-o-login)
+
+- [Projects](#3-projects)
+
+  - [POST - /projects](#31-criação-de-projeto)
+  - [GET - /projects](#32-listagem-de-projetos)
+  - [GET - /projects/user/:id](#33-listagem-de-projetos-criados-pelo-usuário)
+  - [GET - /projects/:id/queue](#34-listagem-da-lista-de-espera-de-um-projeto)
+  - [PATCH - /projects/:id](#34-atualização-dos-dados-de-um-projeto)
+  - [PATCH - /projects/joinqueue/:id](#35-fazer-alteração-de-usuários-na-fila-do-projetoconfirmar-ou-recusar)
+  - [DELETE /projects/:id](#36-deleção-de-um-projeto)
+
+- [Technologies](#4-technologies)
+  - [POST - /technologies](#41-criação-de-uma-tecnologia)
+  - [GET - /technologies](#42-listagem-de-todas-as-tecnologias)
+  - [PATCH - /technologies/:id](#43-atualização-de-dados-da-tecnologia)
+  - [DELETE - /technologies/:id](#44-deleção-da-technologia)
 
 ---
 
@@ -116,7 +132,7 @@ O objeto User é definido como:
 | --------- | ------- | --------------------------------------------- |
 | id        | string  | Identificador único do usuário                |
 | name      | string  | O nome do usuário.                            |
-| username  | string  |                                               |
+| username  | string  | Apelidodo usuário                             |
 | email     | string  | O e-mail do usuário.                          |
 | password  | string  | A senha de acesso do usuário                  |
 | avatarUrl | string  | Imagem do perfil do usuário                   |
@@ -260,13 +276,6 @@ STATUS: 200 OK
 
 ### Exemplo de Request:
 
-```
-GET /users/9cda28c9-e540-4b2c-bf0c-c90006d37893
-Host: http://suaapi.com/v1
-Authorization: None
-Content-type: application/json
-```
-
 ### Parâmetros da Requisição:
 
 | Parâmetro | Tipo   | Descrição                             |
@@ -276,7 +285,7 @@ Content-type: application/json
 ### Corpo da Requisição:
 
 ```json
-Vazio
+No-Body
 ```
 
 ### Exemplo de Response:
@@ -380,10 +389,6 @@ No-Body
 STATUS: 204 - No Content
 ```
 
-```json
-{}
-```
-
 ### Possíveis Erros:
 
 | Código do Erro   | Descrição                  |
@@ -436,4 +441,623 @@ STATUS: 200 OK
 
 ---
 
-[ Voltar para o topo ](#tabela-de-conteúdos)
+## 3. **Projects**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+O objeto Projects é definido como:
+
+| Campo       | Tipo    | Descrição                      |
+| ----------- | ------- | ------------------------------ |
+| id          | string  | Identificador único            |
+| name        | string  | O nome                         |
+| imgUrl      | string  | Imagem                         |
+| description | string  | Um breve resumo                |
+| maxTeamSize | number  | Numero maximo de participantes |
+| ownerId     | string  | Id do usuário que criou        |
+| isActive    | boolean | Define se está ativo ou não    |
+| createdAt   | string  | Data de criação                |
+| updatedAt   | string  | Data de atualização            |
+| deletedAt   | string  | Data em que foi deletado       |
+
+### Endpoints
+
+| Método | Rota                | Descrição                                   |
+| ------ | ------------------- | ------------------------------------------- |
+| POST   | /projects           | Criação de um projeto.                      |
+| GET    | /projects           | Lista todos os projetos                     |
+| GET    | projects/user/:id   | Lista um projeto usando o ID como parâmetro |
+| PATCH  | /projects/:id/queue | Usuário solicita a entrada na fila          |
+| GET    | /projects/:id/queue | Lista todos os usuários na fila             |
+| PATCH  | /projects           | Atualização dos dados                       |
+| DELETE | /projects/:id       | Deleta o projeto passando o ID              |
+
+---
+
+### 3.1. **Criação de Projeto**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `POST /projects`
+
+### Body para a requisição:
+
+```json
+{
+  "name": "Project Name",
+  "imgUrl": "https://projectimage.com",
+  "description": "Something about the Project",
+  "maxTeamSize": "7",
+  "technologies": [
+    "c2b5ee31-8e30-403c-8acf-5731695b64b2",
+    "260042bd-b7ce-45e3-bd68-f119554fb674"
+  ]
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 201 Created
+```
+
+```json
+{
+  "name": "Project Name",
+  "imgUrl": "https://projectimage.com",
+  "description": "Something about the Project",
+  "maxTeamSize": 7,
+  "deletedAt": null,
+  "id": "d94a4326-acd8-4d77-9d7f-561799e771da",
+  "isActive": true,
+  "createdAt": "2023-01-16T15:09:29.917Z",
+  "updatedAt": "2023-01-16T15:09:29.917Z",
+  "ownerId": "9bec60b8-dcaf-482d-94a3-0b4c598c06fe",
+  "technologies": [
+    {
+      "id": "c2b5ee31-8e30-403c-8acf-5731695b64b2",
+      "name": "CSS",
+      "icon": "https://cdn.jsdelivr.net/gh/devicons",
+      "createdAt": "2023-01-16T15:09:04.647Z",
+      "updatedAt": "2023-01-16T15:09:04.647Z",
+      "deletedAt": null
+    },
+    {
+      "id": "260042bd-b7ce-45e3-bd68-f119554fb674",
+      "name": "JS",
+      "icon": "https://cdn.jsdelivr.net/gh/devicons",
+      "createdAt": "2023-01-16T15:09:07.629Z",
+      "updatedAt": "2023-01-16T15:09:07.629Z",
+      "deletedAt": null
+    }
+  ]
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                        |
+| ---------------- | -------------------------------- |
+| 401 Unauthorized | Invalid token                    |
+| 400 Bad request  | Name is a required field         |
+| 400 Bad request  | maxTeamSize is a required field  |
+| 400 Bad request  | technologies is a required field |
+
+---
+
+### 3.2. **Listagem de projetos**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `GET /projects`
+
+### Body para a requisição:
+
+```json
+No-Body
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 Ok
+```
+
+```json
+{
+  "nextPage": null,
+  "previousPage": null,
+  "totalPages": 1,
+  "projects": [
+    {
+      "id": "f56487d8-c302-4369-96d3-36876edea67f",
+      "name": "Project Test",
+      "imgUrl": "https://projectimage.com",
+      "description": "Another Project",
+      "maxTeamSize": 7,
+      "isActive": true,
+      "createdAt": "2023-01-16T15:11:09.198Z",
+      "updatedAt": "2023-01-16T15:11:09.213Z",
+      "deletedAt": null,
+      "owner": {
+        "id": "9bec60b8-dcaf-482d-94a3-0b4c598c06fe",
+        "email": "felps@mail.com",
+        "name": "Felipe",
+        "avatarUrl": null,
+        "level": null,
+        "contact": null
+      },
+      "projectTechs": [
+        {
+          "technologies": {
+            "name": "NodeJS",
+            "icon": "https://cdn.jsdelivr.net/gh/devicons"
+          }
+        },
+        {
+          "technologies": {
+            "name": "React",
+            "icon": "https://cdn.jsdelivr.net/gh/devicons"
+          }
+        }
+      ]
+    },
+    {
+      "id": "d94a4326-acd8-4d77-9d7f-561799e771da",
+      "name": "Project Name",
+      "imgUrl": "https://projectimage.com",
+      "description": "Something about the Project",
+      "maxTeamSize": 7,
+      "isActive": true,
+      "createdAt": "2023-01-16T15:09:29.917Z",
+      "updatedAt": "2023-01-16T15:09:30.017Z",
+      "deletedAt": null,
+      "owner": {
+        "id": "9bec60b8-dcaf-482d-94a3-0b4c598c06fe",
+        "email": "felps@mail.com",
+        "name": "Felipe",
+        "avatarUrl": null,
+        "level": null,
+        "contact": null
+      },
+      "projectTechs": [
+        {
+          "technologies": {
+            "name": "CSS",
+            "icon": "https://cdn.jsdelivr.net/gh/devicons"
+          }
+        },
+        {
+          "technologies": {
+            "name": "JS",
+            "icon": "https://cdn.jsdelivr.net/gh/devicons"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição     |
+| ---------------- | ------------- |
+| 401 Unauthorized | Invalid token |
+
+---
+
+### 3.3. **Listagem de projetos criados pelo usuário**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `GET /projects/user/:id`
+
+### Body para a requisição:
+
+```json
+No-Body
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 Ok
+```
+
+```json
+{
+  "nextPage": null,
+  "previousPage": null,
+  "totalPages": 1,
+  "projects": [
+    {
+      "id": "f56487d8-c302-4369-96d3-36876edea67f",
+      "name": "Project Test",
+      "imgUrl": "https://projectimage.com",
+      "description": "Another Project",
+      "maxTeamSize": 7,
+      "isActive": true,
+      "createdAt": "2023-01-16T15:11:09.198Z",
+      "updatedAt": "2023-01-16T15:11:09.213Z",
+      "deletedAt": null,
+      "owner": {
+        "id": "9bec60b8-dcaf-482d-94a3-0b4c598c06fe",
+        "email": "felps@mail.com",
+        "name": "Felipe",
+        "avatarUrl": null,
+        "level": null,
+        "contact": null
+      },
+      "projectTechs": [
+        {
+          "technologies": {
+            "name": "NodeJS",
+            "icon": "https://cdn.jsdelivr.net/gh/devicons"
+          }
+        },
+        {
+          "technologies": {
+            "name": "React",
+            "icon": "https://cdn.jsdelivr.net/gh/devicons"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição               |
+| ---------------- | ----------------------- |
+| 401 Unauthorized | Invalid token           |
+| 400 Bad request  | This must be valid uuid |
+
+---
+
+### 3.4. **Listagem da lista de espera de um projeto**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `GET /projects/:id/queue`
+
+### Body para a requisição:
+
+```json
+No-Body
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 Ok
+```
+
+```json
+{
+  ///Retorno da fila de um projeto - AGUARDADO DAVIDSON
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição               |
+| ---------------- | ----------------------- |
+| 401 Unauthorized | Invalid token           |
+| 400 Bad request  | This must be valid uuid |
+
+---
+
+### 3.4. **Atualização dos dados de um projeto**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `PATCH /projects/:id`
+
+### Body para a requisição:
+
+```json
+{
+  "name": "New Project Name",
+  "imgUrl": "https://newprojectimage.com",
+  "description": "Change the description",
+  "maxTeamSize": "7"
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 Ok
+```
+
+```json
+{
+  "id": "f56487d8-c302-4369-96d3-36876edea67f",
+  "name": "New Project Name",
+  "imgUrl": "https://newprojectimage.com",
+  "description": "Change the description",
+  "maxTeamSize": 7,
+  "isActive": true,
+  "createdAt": "2023-01-16T15:11:09.198Z",
+  "updatedAt": "2023-01-16T15:19:36.854Z",
+  "deletedAt": null
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                        |
+| ---------------- | -------------------------------- |
+| 401 Unauthorized | Invalid token                    |
+| 401 Unauthorized | User must have admin permissions |
+| 400 Bad request  | This must be valid uuid          |
+
+---
+
+### 3.5. **Fazer alteração de usuários na fila do projeto(confirmar ou recusar)**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `PATCH /projects/joinqueue/:id`
+
+### Body para a requisição:
+
+```json
+{
+  "isConfirmed": "true"
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 Ok
+```
+
+```json
+{
+  ///Resposta - aguardando Davidson
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                        |
+| ---------------- | -------------------------------- |
+| 401 Unauthorized | Invalid token                    |
+| 401 Unauthorized | User must have admin permissions |
+| 400 Bad request  | This must be valid uuid          |
+
+---
+
+### 3.6. **Deleção de um projeto**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `DELETE /projects/:id`
+
+### Body para a requisição:
+
+```json
+{
+  "name": "New Project Name",
+  "imgUrl": "https://newprojectimage.com",
+  "description": "Change the description",
+  "maxTeamSize": "7"
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 204 No content
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                        |
+| ---------------- | -------------------------------- |
+| 401 Unauthorized | Invalid token                    |
+| 400 Bad request  | This must be valid uuid          |
+| 403 Forbidden    | This project already was deleted |
+
+---
+
+## 4. **Technologies**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+O objeto Technologies é definido como:
+
+| Campo     | Tipo   | Descrição                |
+| --------- | ------ | ------------------------ |
+| id        | string | Identificador único      |
+| name      | string | O nome                   |
+| icon      | string | Icone da tecnologia      |
+| createdAt | string | Data de criação          |
+| updatedAt | string | Data de atualização      |
+| deletedAt | string | Data em que foi deletado |
+
+### Endpoints
+
+| Método | Rota              | Descrição                                      |
+| ------ | ----------------- | ---------------------------------------------- |
+| POST   | /technologies     | Criação                                        |
+| GET    | /technologies     | Listagem de todas tecnologias                  |
+| PATCH  | /technologies/:id | Alteração da tecnologia passada como parâmetro |
+| DELETE | /technologies/:id | Deleção                                        |
+
+---
+
+### 4.1. **Criação de uma Tecnologia**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `POST /technologies`
+
+### Body para a requisição:
+
+```json
+{
+  "name": "CSS",
+  "icon": "https://cdn.jsdelivr.net/gh/devicons"
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 201 Created
+```
+
+```json
+{
+  "name": "CSS",
+  "icon": "https://cdn.jsdelivr.net/gh/devicons",
+  "deletedAt": null,
+  "id": "49eece28-8710-43da-8aab-b952fdc81374",
+  "createdAt": "2023-01-16T18:50:45.147Z",
+  "updatedAt": "2023-01-16T18:50:45.147Z"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                        |
+| ---------------- | -------------------------------- |
+| 401 Unauthorized | Invalid token                    |
+| 401 Unauthorized | User must have admin permissions |
+| 400 Bad request  | Name is a required field         |
+| 400 Bad request  | Icon is a required field         |
+| 409 Conflict     | Technologies already exists      |
+
+---
+
+### 4.2. **Listagem de todas as tecnologias**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `GET /technologies`
+
+### Body para a requisição:
+
+```json
+No-Body
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 OK
+```
+
+```json
+[
+  {
+    "id": "c2b5ee31-8e30-403c-8acf-5731695b64b2",
+    "name": "CSS",
+    "icon": "https://cdn.jsdelivr.net/gh/devicons",
+    "createdAt": "2023-01-16T15:09:04.647Z",
+    "updatedAt": "2023-01-16T15:09:04.647Z",
+    "deletedAt": null
+  },
+  {
+    "id": "260042bd-b7ce-45e3-bd68-f119554fb674",
+    "name": "JS",
+    "icon": "https://cdn.jsdelivr.net/gh/devicons",
+    "createdAt": "2023-01-16T15:09:07.629Z",
+    "updatedAt": "2023-01-16T15:09:07.629Z",
+    "deletedAt": null
+  }
+]
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição     |
+| ---------------- | ------------- |
+| 401 Unauthorized | Invalid token |
+
+---
+
+### 4.3. **Atualização de dados da tecnologia**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `PATCH /technologies/:id`
+
+### Body para a requisição:
+
+```json
+{
+  "name": "JS",
+  "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg"
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 OK
+```
+
+```json
+{
+  "id": "260042bd-b7ce-45e3-bd68-f119554fb674",
+  "name": "JS",
+  "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg",
+  "createdAt": "2023-01-16T15:09:07.629Z",
+  "updatedAt": "2023-01-16T18:52:59.803Z",
+  "deletedAt": null
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                        |
+| ---------------- | -------------------------------- |
+| 401 Unauthorized | Invalid token                    |
+| 401 Unauthorized | User must have admin permissions |
+| 400 Bad request  | This must be a valid UUID        |
+| 404 Not Found    | Id does not exists               |
+| 409 Conflict     | Technologies already exists      |
+
+---
+
+### 4.4. **Deleção da technologia**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `DELETE /technologies/:id`
+
+### Body para a requisição:
+
+```json
+{
+  "No-Body"
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 204 No Content
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                        |
+| ---------------- | -------------------------------- |
+| 401 Unauthorized | Invalid token                    |
+| 401 Unauthorized | User must have admin permissions |
+| 400 Bad request  | This must be a valid UUID        |
+| 404 Not Found    | Id does not exists               |
+
+---
+
+## 5. Considerações finais!
+
+Projeto BackEnd para uma aplicação que foi pensada para ajudar a comunidade de devs e gerar benefícios mútuos.
