@@ -58,3 +58,19 @@ export interface IProjectRequest {
   ownerId: string;
   technologies: string[];
 }
+
+export interface IProjectQueue {
+  user: IUserQueue;
+}
+
+interface IUserQueue {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  avatarUrl: string;
+  bio: string;
+  contact: string;
+  level: string;
+  userTechs: IProjectTechs[];
+}
