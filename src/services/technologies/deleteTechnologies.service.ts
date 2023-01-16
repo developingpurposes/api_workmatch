@@ -3,8 +3,7 @@ import { Technologies } from "../../entities/technologies.entity";
 
 export const deleteTechnologiesService = async (
   idTechnology: string
-): Promise<void> => {
-  console.log(idTechnology);
+): Promise<void> => {  
   const technologiesRepository = dataSource.getRepository(Technologies);
 
   await technologiesRepository.delete({ id: idTechnology });
