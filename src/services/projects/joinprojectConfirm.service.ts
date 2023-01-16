@@ -1,5 +1,4 @@
 import dataSource from "../../data-source";
-import { Projects } from "../../entities/projects.entity";
 import { Projects_queue } from "../../entities/projects_queue";
 import { AppError } from "../../errors/appError";
 
