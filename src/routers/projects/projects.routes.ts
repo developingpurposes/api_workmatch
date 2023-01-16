@@ -9,6 +9,7 @@ import { Projects } from "../../entities/projects.entity";
 import { Users } from "../../entities/users.entity";
 import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
 import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
+import { ensureIsAdminMiddleware } from "../../middlewares/ensureIsAdmin.middleware";
 import { ensureIsOwnerMiddleware } from "../../middlewares/ensureIsOwner.middleware";
 import { ensureAuthMiddleware } from "../../middlewares/esureAuth.middleware";
 import {
@@ -53,7 +54,7 @@ projectsRoutes.patch(
 projectsRoutes.delete(
   "/:id",
   ensureAuthMiddleware,
-  ensureIsOwnerMiddleware,
   ensureIdIsValidMiddleware(Projects),
+  ensureIsAdminMiddleware,
   deleteProjectsController
 );

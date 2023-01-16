@@ -15,7 +15,7 @@ export const deleteProjectsServices = async (projectId: string) => {
   }
 
   if (!projectResponse[0].isActive) {
-    throw new AppError("Deleting users is not allowed!", 400);
+    throw new AppError("This project already deleted!", 403);
   }
 
   await projectRepository.softRemove(projectResponse[0]);
