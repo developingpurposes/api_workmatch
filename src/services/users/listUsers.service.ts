@@ -1,6 +1,7 @@
 import dataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
 import { IUser } from "../../interfaces/users/user.interface";
+import { usersListSerializer } from "../../serializers/users/users.serializers";
 
 export const listUserService = async (): Promise<IUser[]> => {
   const users = await dataSource
@@ -20,11 +21,16 @@ export const listUserService = async (): Promise<IUser[]> => {
       "users.createdAt",
       "users.updatedAt",
       "users.deletedAt",
-      "userTechs.technologies",
+      "technologies.id",
     ])
     .leftJoinAndSelect("users.userTechs", "userTechs")
     .leftJoinAndSelect("userTechs.technologies", "technologies")
     .getMany();
 
-  return users;
+  const validatedData: IUser[] = await usersListSerializer.validate(users, {
+    abortEarly: false,
+    stripUnknown: true,
+  });
+
+  return validatedData;
 };
