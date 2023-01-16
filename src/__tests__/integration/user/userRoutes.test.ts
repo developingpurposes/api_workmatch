@@ -70,8 +70,8 @@ describe("/users", () => {
       .get("/users")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-    expect(response.body).toHaveLength(2);
-    expect(response.body[0]).not.toHaveProperty("password");
+    expect(response.body.users).toHaveLength(2);
+    expect(response.body.users[0]).not.toHaveProperty("password");
   });
 
   test("GET /users -  should not be able to list users without authentication", async () => {
@@ -101,7 +101,7 @@ describe("/users", () => {
       .get("/users")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
     const response = await request(app)
-      .get(`/users/${users.body[0].id}`)
+      .get(`/users/${users.body.users[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     expect(response.body).toHaveProperty("id");
@@ -141,7 +141,7 @@ describe("/users", () => {
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     const response = await request(app).patch(
-      `/users/${userToUpdate.body[0].id}`
+      `/users/${userToUpdate.body.users[0].id}`
     );
 
     expect(response.body).toHaveProperty("message");
@@ -182,7 +182,7 @@ describe("/users", () => {
       .get("/users")
       .set("Authorization", adminToken);
     const response = await request(app)
-      .patch(`/users/${userToUpdateRequest.body[0].id}`)
+      .patch(`/users/${userToUpdateRequest.body.users[0].id}`)
       .set("Authorization", userToken)
       .send(newValue);
 
@@ -203,7 +203,7 @@ describe("/users", () => {
       .set("Authorization", token);
 
     const response = await request(app)
-      .patch(`/users/${userToUpdate.body[0].id}`)
+      .patch(`/users/${userToUpdate.body.users[0].id}`)
       .set("Authorization", token)
       .send(newAdmValue);
 
@@ -212,7 +212,6 @@ describe("/users", () => {
   });
 
   test("PATCH /users, Should be able to update user", async () => {
-    // ????????????????????????
     const userToUpdate = await request(app)
       .post("/users")
       .send(mockedUpdateUserCreate);
@@ -243,7 +242,7 @@ describe("/users", () => {
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     const response = await request(app).delete(
-      `/users/${UserTobeDeleted.body[0].id}`
+      `/users/${UserTobeDeleted.body.users[0].id}`
     );
 
     expect(response.body).toHaveProperty("message");
@@ -264,7 +263,7 @@ describe("/users", () => {
       .send(mockedLoginRequest);
 
     const response = await request(app)
-      .delete(`/users/${userTobeDeleted.body[1].id}`)
+      .delete(`/users/${userTobeDeleted.body.users[1].id}`)
       .set("Authorization", `Bearer ${loginResponse.body.token}`);
 
     expect(response.status).toBe(403);
@@ -280,7 +279,7 @@ describe("/users", () => {
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     const response = await request(app)
-      .delete(`/users/${userTobeDeleted.body[0].id}`)
+      .delete(`/users/${userTobeDeleted.body.users[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
     expect(response.status).toBe(204);
   });
@@ -294,7 +293,7 @@ describe("/users", () => {
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     const response = await request(app)
-      .delete(`/users/${userTobeDeleted.body[0].id}`)
+      .delete(`/users/${userTobeDeleted.body.users[0].id}`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
     expect(response.status).toBe(403);
