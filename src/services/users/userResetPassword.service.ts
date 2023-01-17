@@ -11,7 +11,7 @@ export const userResetPasswordService = async (token: string) => {
    return jwt.verify(token,process.env.SECRET_KEY, async(error, decoded: any) => {
       
       if (error) {
-         throw new AppError(error.message, 409);
+         throw new AppError(error.message, 401);
       }
 
       
@@ -19,7 +19,7 @@ export const userResetPasswordService = async (token: string) => {
       const user = await userRepository.findOne({where: {id: decoded.sub, email: decoded.email}})
      
       if (!user.isActive) {
-         throw new AppError("User inactive", 409) 
+         throw new AppError("User inactive", 401) 
       }
 
       if (user.forgotPassword === token) {
