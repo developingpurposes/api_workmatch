@@ -34,7 +34,6 @@ export const forgotPasswordSendEmail = async (email:string,link:string,name:stri
           text: "recuperação de senha",
           template: "forgotPasswordTemplate",
           attachments: [{
-               filename: 'imagename.svg',
                path: path.resolve("./src/views/assets/logo.svg"),
                cid: 'logo'
           }],

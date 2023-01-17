@@ -35,7 +35,6 @@ export const createdUserSendEmail = async (name:string, email:string) => {
           text: "Obrigado por escolher a Workmatch ",
           template: "createUserTemplate",
           attachments: [{
-               filename: 'imagename.svg',
                path: path.resolve("./src/views/assets/logo2.png"),
                cid: 'logo'
          }],
