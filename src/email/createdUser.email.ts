@@ -31,12 +31,12 @@ export const createdUserSendEmail = async (name:string, email:string) => {
      const messageInfo = {
           from: process.env.SMPT_EMAIL,
           to: email,
-          subject: "Usuario Criado - Não tenho ideia do assunto para esse e-mail",
-          text: "colocar alguma informação aqui",
+          subject: `Boas Vindas, ${name}`,
+          text: "Obrigado por escolher a Workmatch ",
           template: "createUserTemplate",
           attachments: [{
                filename: 'imagename.svg',
-               path: path.resolve("./src/views/assets/logo.svg"),
+               path: path.resolve("./src/views/assets/logo2.png"),
                cid: 'logo'
          }],
           context: {name: name}
