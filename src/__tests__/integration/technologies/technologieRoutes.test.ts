@@ -43,6 +43,24 @@ describe("/technologies", () => {
     expect(response.status).toBe(201);
   });
 
+  test("POST /technlogies, Should not be able to create Technology without authentication", async () => {
+    const response = await request(app)
+      .post("/technologies")
+      .send(mockedCreateTechnology)
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
+  test("POST /technlogies, Should not be able to create Technology with invalid data", async () => {
+    const response = await request(app)
+      .post("/technologies")
+      .set("Authorization", await adminToken());
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("message")
+  });
+
   test("GET /technologies, Should be able to list technologies", async ()=> {
     const techs = await request(app)
     .get("/technologies")
@@ -100,6 +118,19 @@ describe("/technologies", () => {
       .set("Authorization", await userToken());
 
     expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("DELETE /technologies:id, Should not be possible to delete Technology without authentication", async () => {
+    await request(app).post("/users").send(mockedUserCreate);
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", await userToken());
+
+    const response = await request(app)
+      .delete(`/technologies/${techs.body[0].id}`)
+
+    expect(response.status).toBe(401);
     expect(response.body).toHaveProperty("message");
   });
 
