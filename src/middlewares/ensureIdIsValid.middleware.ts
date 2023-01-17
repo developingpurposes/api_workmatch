@@ -4,7 +4,7 @@ import * as yup from "yup";
 
 export const ensureIdIsValidMiddleware =
   (entity: any) => async (req: Request, res: Response, next: NextFunction) => {
-    const testUuid = yup.string().uuid();
+    const testUuid = yup.string().uuid("id does not exist");
 
     const id = req.params.id;
 
