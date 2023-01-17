@@ -14,6 +14,7 @@ export const listsProjectsServices = async (
   const count = await dataSource
     .createQueryBuilder(Projects, "projects")
     .select("COUNT(projects.id)")
+    .withDeleted()
     .getCount();
 
   if (!count) {
