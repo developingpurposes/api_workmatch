@@ -1,5 +1,6 @@
 import dataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
+import { AppError } from "../../errors/appError";
 import { IUser, IUserResponse } from "../../interfaces/users/user.interface";
 import { usersListSerializer } from "../../serializers/users/users.serializers";
 
@@ -10,7 +11,12 @@ export const listUserService = async (
   const count = await dataSource
     .createQueryBuilder(Users, "users")
     .select("COUNT(users.id)")
+    .withDeleted()
     .getCount();
+
+  if (!count) {
+    throw new AppError("empty list", 404);
+  }
 
   const totalPages: number = Math.ceil(count / limit);
 
@@ -18,7 +24,7 @@ export const listUserService = async (
 
   const validatedPage = isNotPage > totalPages ? totalPages : isNotPage;
 
-  const skip: number = validatedPage * limit - limit;
+  const skip: number = Math.abs(validatedPage * limit - limit);
 
   let nextPage: string =
     totalPages <= validatedPage

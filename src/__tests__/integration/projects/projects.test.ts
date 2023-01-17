@@ -317,7 +317,8 @@ describe("/project", () => {
 
       .set("Authorization", token);
 
-    expect(response.body).toHaveProperty("message");
+    expect(response.body.listQueue).toHaveLength(1);
+    expect(response.body.listQueue[0].user).toHaveProperty("id");
     expect(response.status).toBe(200);
   });
 
@@ -331,10 +332,9 @@ describe("/project", () => {
       .get("/projects")
       .set("Authorization", token);
 
-    const response = await request(app)
-      .get(`/projects/${project.body.projects[0].id}/queue`)
-
-      .set("Authorization", token);
+    const response = await request(app).get(
+      `/projects/${project.body.projects[0].id}/queue`
+    );
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);

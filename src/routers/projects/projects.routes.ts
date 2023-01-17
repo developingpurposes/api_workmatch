@@ -4,6 +4,7 @@ import { deleteProjectsController } from "../../controllers/projects/deleteProje
 import { joinProjectConfirmController } from "../../controllers/projects/joinProjectConfirmController";
 import { joinQueueProjectsController } from "../../controllers/projects/joinQueueProjects.controller";
 import { listsProjectsController } from "../../controllers/projects/listProject.controller";
+import { listQueueProjectsController } from "../../controllers/projects/listQueueProjects.controller";
 import { listUserProjectsController } from "../../controllers/projects/listUserProjects.controller";
 import { updateProjectsController } from "../../controllers/projects/updateProjects.controller";
 import { Projects } from "../../entities/projects.entity";
@@ -13,6 +14,7 @@ import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid
 import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
 import { ensureIsAdminMiddleware } from "../../middlewares/ensureIsAdmin.middleware";
 import { ensureIsOwnerMiddleware } from "../../middlewares/ensureIsOwner.middleware";
+import { ensureProjectIsExistMiddleware } from "../../middlewares/ensureProjectsIsExist.middleware";
 import { ensureAuthMiddleware } from "../../middlewares/esureAuth.middleware";
 import {
   createdSerializerProjects,
@@ -25,6 +27,7 @@ projectsRoutes.post(
   "",
   ensureAuthMiddleware,
   ensureDataIsValidMiddleware(createdSerializerProjects),
+  ensureProjectIsExistMiddleware,
   createProjectsController
 );
 
@@ -49,6 +52,14 @@ projectsRoutes.get(
   ensureAuthMiddleware,
   ensureIdIsValidMiddleware(Users),
   listUserProjectsController
+);
+
+projectsRoutes.get(
+  "/:id/queue",
+  ensureAuthMiddleware,
+  ensureIdIsValidMiddleware(Projects),
+  ensureIsOwnerMiddleware,
+  listQueueProjectsController
 );
 
 projectsRoutes.patch(

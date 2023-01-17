@@ -1,6 +1,7 @@
 import * as yup from "yup";
 import {
   IProject,
+  IProjectQueue,
   IProjectRequest,
   IProjectUpdate,
 } from "../../interfaces/projects/projects.interface";
@@ -54,3 +55,28 @@ export const listSerializerProjects: yup.SchemaOf<IProject[]> = yup.array().of(
     id: yup.string().required(),
   })
 );
+
+export const listSerializerProjectsQueue: yup.SchemaOf<IProjectQueue[]> = yup
+  .array()
+  .of(
+    yup.object().shape({
+      user: yup.object({
+        userTechs: yup.array().of(
+          yup.object({
+            technologies: yup.object({
+              icon: yup.string().required(),
+              name: yup.string().required(),
+            }),
+          })
+        ),
+        contact: yup.string().notRequired().nullable(),
+        level: yup.string().notRequired().nullable(),
+        bio: yup.string().notRequired().nullable(),
+        avatarUrl: yup.string().notRequired().nullable(),
+        username: yup.string().required(),
+        name: yup.string().required(),
+        email: yup.string().required(),
+        id: yup.string().required(),
+      }),
+    })
+  );

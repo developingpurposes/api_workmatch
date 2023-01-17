@@ -5,20 +5,20 @@ import { AppError } from "../../errors/appError";
 export const deleteProjectsServices = async (projectId: string) => {
   const projectRepository = dataSource.getRepository(Projects);
 
-  const projectResponse = await projectRepository.find({
-    withDeleted: true,
+  const projectResponse = await projectRepository.findOne({
     where: { id: projectId },
+    withDeleted: true,
   });
 
-  if (!projectResponse.length) {
-    throw new AppError("Deleting projects is not allowed!", 404);
-  }
-
-  if (!projectResponse[0].isActive) {
+  if (!projectResponse.isActive) {
     throw new AppError("This project already deleted!", 403);
   }
 
-  await projectRepository.softRemove(projectResponse[0]);
+  if (!projectResponse) {
+    throw new AppError("Deleting projects is not allowed!", 404);
+  }
 
-  await projectRepository.save({ ...projectResponse[0], isActive: false });
+  await projectRepository.softRemove(projectResponse);
+
+  await projectRepository.save({ ...projectResponse, isActive: false });
 };
