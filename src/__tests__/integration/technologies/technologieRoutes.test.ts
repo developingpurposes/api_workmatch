@@ -61,6 +61,16 @@ describe("/technologies", () => {
     expect(response.body).toHaveProperty("message")
   });
 
+  test("POST /technologies, Users Should NOT be able to create Technology", async () => {
+    const response = await request(app)
+      .post("/technologies")
+      .send(mockedCreateTechnology)
+      .set("Authorization", await userToken());
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(403);
+  });
+
   test("GET /technologies, Should be able to list technologies", async ()=> {
     const techs = await request(app)
     .get("/technologies")
@@ -77,17 +87,6 @@ describe("/technologies", () => {
     expect(techs.status).toBe(401)
     expect(techs.body).toHaveProperty("message")
   })
-
-  test("POST /technologies, Users Should NOT be able to create Technology", async () => {
-    await request(app).post("/users").send(mockedUserCreate);
-    const response = await request(app)
-      .post("/technologies")
-      .send(mockedCreateTechnology)
-      .set("Authorization", await userToken());
-
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(403);
-  });
 
   test("PATCH /technologies, Admin should be able to edit Technology", async () => {
     const techs = await request(app)
