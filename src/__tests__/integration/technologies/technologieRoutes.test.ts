@@ -2,8 +2,8 @@ import request from "supertest";
 import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
-import { mockedAdminLoginRequest } from "../../mocks/integration/login.mock";
-import { mockedCreateTechnology } from "../../mocks/integration/technologie.mock";
+import { mockedCreateTechnology } from "../../mocks/integration/technology.mock";
+import { adminToken, userToken } from "../../mocks/integration/token.mocks";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
@@ -22,6 +22,7 @@ describe("/technologies", () => {
       });
 
     await request(app).post("/users").send(mockedUserCreate);
+    await request(app).post("/users").send(mockedAdminUserCreate);
   });
 
   afterAll(async () => {
@@ -29,15 +30,10 @@ describe("/technologies", () => {
   });
 
   test("POST /technlogies, Admin should be able to create Technology", async () => {
-    await request(app).post("/users").send(mockedAdminUserCreate);
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-
     const response = await request(app)
       .post("/technologies")
       .send(mockedCreateTechnology)
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+      .set("Authorization", await adminToken());
 
     expect(response.body).toHaveProperty("id");
     expect(response.body).toHaveProperty("name");
@@ -49,25 +45,19 @@ describe("/technologies", () => {
 
   test("POST /technologies, Users Should NOT be able to create Technology", async () => {
     await request(app).post("/users").send(mockedUserCreate);
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUserCreate);
-
     const response = await request(app)
       .post("/technologies")
       .send(mockedCreateTechnology)
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
+      .set("Authorization", await userToken());
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 
   test("PATCH /technologies, Admin should be able to edit Technology", async () => {
-    await request(app).post("/users").send(mockedAdminUserCreate);
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-    const techs = await request(app).get("/technologies");
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", await adminToken());
 
     const response = await request(app)
       .patch(`/technologies/${techs.body[0].id}`)
@@ -75,10 +65,40 @@ describe("/technologies", () => {
         name: "React Native 2",
         icon: "http://reactNative.com",
       })
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
+      .set("Authorization", await adminToken());
 
     expect(response.body.name).toBe("React Native 2");
     expect(response.body.icon).toBe("http://reactNative.com");
     expect(response.status).toBe(200);
+  });
+
+  test("DELETE /technologies:id, User should not be possible to delete Technology", async () => {
+    await request(app).post("/users").send(mockedUserCreate);
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", await userToken());
+
+    const response = await request(app)
+      .delete(`/technologies/${techs.body[0].id}`)
+      .set("Authorization", await userToken());
+
+    expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("DELETE /technologies:id, Admin should be possible to delete Technology", async () => {
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", await adminToken());
+    const response = await request(app)
+      .delete(`/technologies/${techs.body[0].id}`)
+      .set("Authorization", await adminToken());
+
+    const deletedTech = await request(app)
+      .get("/technologies")
+      .set("Authorization", await adminToken());
+
+    expect(response.status).toBe(204);
+    expect(deletedTech.body).not.toHaveLength(1);
   });
 });

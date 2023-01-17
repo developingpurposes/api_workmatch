@@ -1,17 +1,68 @@
-import AppDataSource from "../../data-source";
+import dataSource from "../../data-source";
 import { Users } from "../../entities/users.entity";
-import { IUser } from "../../interfaces/users/user.interface";
-import { listUsersSerializer } from "../../serializers/users.serializers";
+import { AppError } from "../../errors/appError";
+import { IUser, IUserResponse } from "../../interfaces/users/user.interface";
+import { usersListSerializer } from "../../serializers/users/users.serializers";
 
-export const listUsersService = async (): Promise<Array<IUser>> => {
-  const userRepository = AppDataSource.getRepository(Users);
+export const listUserService = async (
+  limit: number,
+  page: number
+): Promise<IUserResponse> => {
+  const count = await dataSource
+    .createQueryBuilder(Users, "users")
+    .select("COUNT(users.id)")
+    .withDeleted()
+    .getCount();
 
-  const usersList = await userRepository.find();
+  if (!count) {
+    throw new AppError("empty list", 404);
+  }
 
-  const responseList = await listUsersSerializer.validate(usersList, {
-    stripUnknown: true,
+  const totalPages: number = Math.ceil(count / limit);
+
+  const isNotPage = page >= 1 ? page : 1;
+
+  const validatedPage = isNotPage > totalPages ? totalPages : isNotPage;
+
+  const skip: number = Math.abs(validatedPage * limit - limit);
+
+  let nextPage: string =
+    totalPages <= validatedPage
+      ? null
+      : `https://backend-workmatch.onrender.com/users?page=${
+          validatedPage + 1
+        }`;
+
+  let previousPage: string =
+    skip * limit <= 1
+      ? null
+      : `https://backend-workmatch.onrender.com/users?page=${
+          validatedPage - 1
+        }`;
+
+  const users = await dataSource
+    .createQueryBuilder()
+    .from(Users, "users")
+    .select("users")
+    .leftJoinAndSelect("users.userTechs", "userTechs")
+    .leftJoinAndSelect("userTechs.technologies", "technologies")
+    .orderBy("users.createdAt", "DESC")
+    .take(limit)
+    .skip(skip)
+    .withDeleted()
+    .getMany();
+
+  const validatedData: IUser[] = await usersListSerializer.validate(users, {
     abortEarly: false,
+    stripUnknown: true,
   });
 
-  return responseList;
+  const usersResponse = {
+    nextPage: nextPage,
+    previousPage: previousPage,
+    totalPages: totalPages,
+    users: validatedData,
+  };
+
+  return usersResponse;
 };

@@ -1,31 +1,31 @@
-import AppDataSource from "../../data-source";
-import { Users } from "../../entities/users.entity";
+import dataSource from "../../data-source";
 import { AppError } from "../../errors/appError";
-import { IUser, IUserUpdate } from "../../interfaces/users/user.interface";
-import { responseUserSerializer } from "../../serializers/users.serializers";
+import { In } from "typeorm";
+import { Technologies } from "../../entities/technologies.entity";
+import { IUserUpdate } from "../../interfaces/users/user.interface";
+import { Users } from "../../entities/users.entity";
+import { Users_technologies } from "../../entities/users_technologies.entity";
+import { userListSerializer } from "../../serializers/users/users.serializers";
 
 export const patchUserService = async (
   newData: IUserUpdate,
-  userId: string,
   patchUserId: string
 ) => {
-  const userRepository = AppDataSource.getRepository(Users);
+  let technologiesIds = newData.technologies;
+
+  if (technologiesIds == undefined) {
+    technologiesIds = [];
+  }
+
+  const userRepository = dataSource.getRepository(Users);
+  const userTechsRepository = dataSource.getRepository(Users_technologies);
+  const technologyRepository = dataSource.getRepository(Technologies);
 
   const patchProfile = await userRepository.findOneBy({
     id: patchUserId,
   });
 
-  if (!patchProfile) {
-    throw new AppError("User not found!", 404);
-  }
-
-  const myProfile = await userRepository.findOneBy({
-    id: userId,
-  });
-
-  if (myProfile.id !== patchProfile.id && !myProfile.isAdm) {
-    throw new AppError("Missing admin permissions", 401);
-  }
+  delete newData.technologies;
 
   const updatedUser = userRepository.create({
     ...patchProfile,
@@ -33,13 +33,42 @@ export const patchUserService = async (
   });
   await userRepository.save(updatedUser);
 
-  const responseUpdatedUser = await responseUserSerializer.validate(
-    updatedUser,
-    {
-      stripUnknown: true,
-      abortEarly: false,
-    }
-  );
+  if (technologiesIds.length) {
+    const techsSearch = await technologyRepository.find({
+      where: {
+        id: In(technologiesIds),
+      },
+    });
 
-  return responseUpdatedUser;
+    if (!techsSearch.length) {
+      throw new AppError("Technologies is not found!", 404);
+    }
+
+    await userTechsRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ user: patchUserId })
+      .execute();
+
+    techsSearch.forEach(async (newTechlogy) => {
+      const userTechsResponse = userTechsRepository.create({});
+
+      await userTechsRepository.save(userTechsResponse);
+
+      await userTechsRepository.update(
+        { id: userTechsResponse.id },
+        {
+          user: patchProfile,
+          technologies: newTechlogy,
+        }
+      );
+    });
+  }
+
+  const userResponse = await userListSerializer.validate(updatedUser, {
+    stripUnknown: true,
+    abortEarly: false,
+  });
+
+  return userResponse;
 };

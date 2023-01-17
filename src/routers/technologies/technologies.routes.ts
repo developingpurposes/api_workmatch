@@ -1,46 +1,46 @@
 import { Router } from "express";
-import { createdTechnologiesController } from "../../controllers/technologies/createdTechnologies.controller";
+import { createTechnologiesController } from "../../controllers/technologies/createdTechnologies.controller";
 import { deleteTechnologiesController } from "../../controllers/technologies/deleteTechnologies.controller";
 import { listAllTechnologiesController } from "../../controllers/technologies/listAllTechnologies.controller";
 import { updateTechnologiesController } from "../../controllers/technologies/updateTechnologies.controller";
+import { Technologies } from "../../entities/technologies.entity";
 import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
+import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
 import { ensureIsAdminMiddleware } from "../../middlewares/ensureIsAdmin.middleware";
-import { ensureTechnologyIdIsValidMiddleware } from "../../middlewares/ensureTechnologyIdIsValid.middleware";
 import { ensureTechnologyIsExistMiddleware } from "../../middlewares/ensureTechnologyIsExist.middleware";
 import { ensureAuthMiddleware } from "../../middlewares/esureAuth.middleware";
-import { createdSerializerTechnologies, updateSerializerTechnologies } from "../../serializers/technologies/technologies.serializer";
+import {
+  createdSerializerTechnologies,
+  updateSerializerTechnologies,
+} from "../../serializers/technologies/technologies.serializer";
 
-export const techlogiesRoutes = Router()
+export const technologiesRoutes = Router();
 
+technologiesRoutes.post(
+  "",
+  ensureAuthMiddleware,
+  ensureIsAdminMiddleware,
+  ensureDataIsValidMiddleware(createdSerializerTechnologies),
+  ensureTechnologyIsExistMiddleware,
+  createTechnologiesController
+);
 
-techlogiesRoutes.post("",
-     ensureAuthMiddleware,
-     ensureIsAdminMiddleware,
-     ensureDataIsValidMiddleware(createdSerializerTechnologies),
-     ensureTechnologyIsExistMiddleware,
-     createdTechnologiesController
-)
+technologiesRoutes.get("", ensureAuthMiddleware, listAllTechnologiesController);
 
+technologiesRoutes.patch(
+  "/:id",
+  ensureAuthMiddleware,
+  ensureIsAdminMiddleware,
+  ensureIdIsValidMiddleware(Technologies),
+  ensureDataIsValidMiddleware(updateSerializerTechnologies),
+  ensureTechnologyIsExistMiddleware,
+  updateTechnologiesController
+);
 
-techlogiesRoutes.get("",
-     ensureAuthMiddleware,
-     listAllTechnologiesController
-)
-
-
-techlogiesRoutes.patch("/:id",
-     ensureAuthMiddleware,
-     ensureIsAdminMiddleware,
-     ensureTechnologyIdIsValidMiddleware,
-     ensureDataIsValidMiddleware(updateSerializerTechnologies),
-     ensureTechnologyIsExistMiddleware,
-     updateTechnologiesController
-)
-
-
-techlogiesRoutes.delete("/:id",
-     ensureAuthMiddleware,
-     ensureIsAdminMiddleware,
-     ensureTechnologyIdIsValidMiddleware,
-     deleteTechnologiesController
-)
+technologiesRoutes.delete(
+  "/:id",
+  ensureAuthMiddleware,
+  ensureIsAdminMiddleware,
+  ensureIdIsValidMiddleware(Technologies),
+  deleteTechnologiesController
+);

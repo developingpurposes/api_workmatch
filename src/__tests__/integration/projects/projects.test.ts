@@ -3,19 +3,17 @@ import { DataSource } from "typeorm";
 import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
 import {
-  mockedAdminLoginRequest,
-  mockedLoginRequest,
-} from "../../mocks/integration/login.mock";
-import {
   invalidMockedProjectCreate,
   mockedProjectCreate,
 } from "../../mocks/integration/project.mock";
+import { mockedCreateTechnology } from "../../mocks/integration/technology.mock";
+import { adminToken, userToken } from "../../mocks/integration/token.mocks";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
 } from "../../mocks/integration/user.mocks";
 
-describe("/login", () => {
+describe("/project", () => {
   let connection: DataSource;
 
   beforeAll(async () => {
@@ -28,6 +26,7 @@ describe("/login", () => {
       });
 
     await request(app).post("/users").send(mockedUserCreate);
+    await request(app).post("/users").send(mockedAdminUserCreate);
   });
 
   afterAll(async () => {
@@ -35,18 +34,16 @@ describe("/login", () => {
   });
 
   test("POST /projects, Should be able to create project", async () => {
-    const registerResponse = await request(app)
-      .post("/users")
-      .send(mockedAdminUserCreate);
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
+    const technologies = await request(app)
+      .post("/technologies")
+      .send(mockedCreateTechnology)
+      .set("Authorization", await adminToken());
 
-    mockedProjectCreate.user = registerResponse.body.id;
+    mockedProjectCreate.technologies = [`${technologies.body.id}`];
 
     const response = await request(app)
       .post("/projects")
-      .set("Authorization", `Bearer ${loginResponse.body.token}`)
+      .set("Authorization", await adminToken())
       .send(mockedProjectCreate);
 
     expect(response.body).toHaveProperty("id");
@@ -57,23 +54,18 @@ describe("/login", () => {
     expect(response.body).toHaveProperty("isActive");
     expect(response.body).toHaveProperty("createdAt");
     expect(response.body).toHaveProperty("updatedAt");
-    expect(response.body).toHaveProperty("user");
-    expect(response.body).toHaveProperty("userProjects");
-    expect(response.body).toHaveProperty("projectTech");
+    expect(response.body).toHaveProperty("ownerId");
+    expect(response.body).toHaveProperty("technologies");
 
-    expect(response.body.projectTech.length).toEqual(3);
+    expect(response.body.technologies.length).toEqual(1);
     expect(response.body.isActive).toEqual(true);
     expect(response.status).toBe(201);
   });
 
   test("POST /projects, should not be able to create projects with invalid data", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-
     const response = await request(app)
       .post("/projects")
-      .set("Authorization", `Bearer ${loginResponse.body.token}`)
+      .set("Authorization", await userToken())
       .send(invalidMockedProjectCreate);
 
     expect(response.body).toHaveProperty("message");
@@ -90,33 +82,25 @@ describe("/login", () => {
   });
 
   test("GET /projects -  Must be able to list projects", async () => {
-    await request(app).post("/users").send(mockedLoginRequest);
-    const LoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
     const response = await request(app)
       .get("/projects")
-      .set("Authorization", `Bearer ${LoginResponse.body.token}`);
+      .set("Authorization", await adminToken());
 
-    expect(response.body).toHaveLength(1);
-    expect(response.body[0]).toHaveProperty("id");
+    expect(response.body.projects).toHaveLength(1);
+    expect(response.body.projects[0]).toHaveProperty("id");
   });
 
   test("GET /projects -  Must be able to list projects by ownerID", async () => {
-    const LoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-
     const projectresponse = await request(app)
       .get("/projects")
-      .set("Authorization", `Bearer ${LoginResponse.body.token}`);
+      .set("Authorization", await adminToken());
 
     const response = await request(app)
-      .get(`/projects/user/${projectresponse.body[0].userId}`)
-      .set("Authorization", `Bearer ${LoginResponse.body.token}`);
+      .get(`/projects/user/${projectresponse.body.projects[0].owner.id}`)
+      .set("Authorization", await adminToken());
 
-    expect(response.body).toHaveLength(1);
-    expect(response.body[0]).toHaveProperty("id");
+    expect(response.body.projects).toHaveLength(1);
+    expect(response.body.projects[0]).toHaveProperty("id");
     expect(response.status).toBe(200);
   });
 
@@ -130,101 +114,28 @@ describe("/login", () => {
   test("PATCH /projects, Should be able to update Project", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const projectToUpdate = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await adminToken());
 
     const response = await request(app)
-      .patch(`/projects/${projectToUpdate.body[0].id}`)
-      .set("Authorization", token)
+      .patch(`/projects/${projectToUpdate.body.projects[0].id}`)
+      .set("Authorization", await adminToken())
       .send(newData);
 
     expect(response.status).toBe(200);
-    expect(response.body[0].name).toEqual("Teste");
-  });
-
-  test("DELETE /projects, Should not be able to delete projects without auhentication", async () => {
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-
-    const projectToBeDeleted = await request(app)
-      .get("/projects")
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
-
-    const response = await request(app).delete(
-      `/projects/${projectToBeDeleted.body[0].id}`
-    );
-
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
-  });
-
-  test("DELETE /projects, Should be able to soft delete project", async () => {
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-
-    const projectToBeDeleted = await request(app)
-      .get("/projects")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-
-    const response = await request(app)
-      .delete(`/users/${projectToBeDeleted.body[0].id}`)
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-
-    expect(response.status).toBe(204);
-  });
-
-  test("DELETE /projects, Should not be able to delete project with isActive = false", async () => {
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-
-    const projectToBeDeleted = await request(app)
-      .get("/projects")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-
-    const response = await request(app).delete(
-      `/users/${projectToBeDeleted.body[0].id}`
-    );
-
-    expect(response.status).toBe(403);
-    expect(response.body).toHaveProperty("message");
-  });
-
-  test("DELETE /projects, Should not be able to delete project with invalid id", async () => {
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-
-    const response = await request(app)
-      .delete("/projects/56516144")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
+    expect(response.body.name).toEqual("Teste");
   });
 
   test("PATCH /projects, should not be able to update projects without authentication", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const projectToUpdate = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     const response = await request(app)
-      .patch(`/projects/${projectToUpdate.body[0].id}`)
+      .patch(`/projects/${projectToUpdate.body.projects[0].id}`)
       .send(newData);
 
     expect(response.body).toHaveProperty("message");
@@ -234,53 +145,38 @@ describe("/login", () => {
   test("PATCH /projects, should not be able to update projects with invalid Id", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const response = await request(app)
       .patch(`/projects/olhaoteste111`)
-      .set("Authorization", token)
+      .set("Authorization", await adminToken())
       .send(newData);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
   });
 
   test("PATCH /projects, should not be able to update projects of other user without admin privileges", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const projectToUpdate = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     const response = await request(app)
-      .patch(`/projects/${projectToUpdate.body[0].id}`)
+      .patch(`/projects/${projectToUpdate.body.projects[0].id}`)
       .send(newData)
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });
 
   test("POST /projects, should not be able to join projects without authentication", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     const response = await request(app).post(
-      `/projects/joinqueue/${project.body[0].id}`
+      `/projects/joinqueue/${project.body.projects[0].id}`
     );
 
     expect(response.body).toHaveProperty("message");
@@ -288,17 +184,12 @@ describe("/login", () => {
   });
 
   test("POST /projects, should not be able to join projects without authentication", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     const response = await request(app).post(
-      `/projects/joinqueue/${project.body[0].id}`
+      `/projects/joinqueue/${project.body.projects[0].id}`
     );
 
     expect(response.body).toHaveProperty("message");
@@ -306,161 +197,166 @@ describe("/login", () => {
   });
 
   test("POST /projects, should be able to join projects", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     const response = await request(app)
-      .post(`/projects/joinqueue/${project.body[0].id}`)
-      .set("authorization", token);
+      .post(`/projects/joinqueue/${project.body.projects[0].id}`)
+      .set("authorization", await userToken());
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(200);
   });
 
   test("POST /projects, should not be able to join projects if already joined", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     const response = await request(app)
-      .post(`/projects/joinqueue/${project.body[0].id}`)
-      .set("Authorization", token);
+      .post(`/projects/joinqueue/${project.body.projects[0].id}`)
+      .set("Authorization", await userToken());
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(409);
   });
 
   test("POST /projects, should not be able to join projects if you are owner of project", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await adminToken());
 
     const response = await request(app)
-      .post(`/projects/joinqueue/${project.body[0].id}`)
-      .set("Authorization", token);
+      .post(`/projects/joinqueue/${project.body.projects[0].id}`)
+      .set("Authorization", await adminToken());
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(409);
   });
 
   test("GET /projects, should be able to list all participants", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await adminToken());
 
     const response = await request(app)
-      .get(`/projects/${project.body[0].id}/queue`)
+      .get(`/projects/${project.body.projects[0].id}/queue`)
+      .set("Authorization", await adminToken());
 
-      .set("Authorization", token);
-
-    expect(response.body).toHaveProperty("message");
+    expect(response.body.listQueue).toHaveLength(1);
+    expect(response.body.listQueue[0].user).toHaveProperty("id");
     expect(response.status).toBe(200);
   });
 
   test("GET /projects, should not be able to list all participants whithout authentication", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await adminToken());
 
-    const response = await request(app)
-      .get(`/projects/${project.body[0].id}/queue`)
-
-      .set("Authorization", token);
+    const response = await request(app).get(
+      `/projects/${project.body.projects[0].id}/queue`
+    );
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });
 
   test("GET /projects, should not be able to list all participants if not owner", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
     const projectResponse = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await userToken());
 
     const response = await request(app)
-      .get(`/projects/${projectResponse.body[0].id}/queue`)
-      .set("Authorization", token);
+      .get(`/projects/${projectResponse.body.projects[0].id}/queue`)
+      .set("Authorization", await userToken());
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });
 
   test("PATCH /projects, should not be able to accept participants if not owner", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-    const adminToken = `Bearer ${adminLoginResponse.body.token}`;
-
     const projectToUpdate = await request(app)
       .get("/projects")
-      .set("Authorization", adminToken);
+      .set("Authorization", await adminToken());
 
     const participantToUpdate = await request(app)
-      .get(`/projects/${projectToUpdate.body[0].id}/queue`)
-      .set("Authorization", adminToken);
+      .get(`/projects/${projectToUpdate.body.projects[0].id}/queue`)
+      .set("Authorization", await adminToken());
 
     const response = await request(app)
-      .get(`/projects/acceptparticipant/${participantToUpdate.body[0].id}`)
-      .set("Authorization", token);
+      .patch(
+        `/projects/confirmuser/${participantToUpdate.body.listQueue[0].id}`
+      )
+      .set("Authorization", await userToken());
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /projects, shouldbe able to accept participants", async () => {
-    const loginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
-    const token = `Bearer ${loginResponse.body.token}`;
-
+  test("PATCH /projects, should be able to accept participants", async () => {
     const project = await request(app)
       .get("/projects")
-      .set("Authorization", token);
+      .set("Authorization", await adminToken());
 
     const projectParticipants = await request(app)
-      .get(`/projects/${project.body[0].id}/queue`)
-      .set("Authorization", token);
+      .get(`/projects/${project.body.projects[0].id}/queue`)
+      .set("Authorization", await adminToken());
 
     const response = await request(app)
-      .get(`/projects/acceptparticipant/${projectParticipants.body[0].id}`)
-      .set("Authorization", token);
+      .patch(
+        `/projects/confirmuser/${projectParticipants.body.listQueue[0].id}`
+      )
+      .set("Authorization", await adminToken());
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(200);
+  });
+
+  test("DELETE /projects, Should not be able to delete projects without auhentication", async () => {
+    const projectToBeDeleted = await request(app)
+      .get("/projects")
+      .set("Authorization", await userToken());
+
+    const response = await request(app).delete(
+      `/projects/${projectToBeDeleted.body.projects[0].id}`
+    );
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
+  test("DELETE /projects, Should be able to soft delete project", async () => {
+    const projectToBeDeleted = await request(app)
+      .get("/projects")
+      .set("Authorization", await adminToken());
+
+    const response = await request(app)
+      .delete(`/projects/${projectToBeDeleted.body.projects[0].id}`)
+      .set("Authorization", await adminToken());
+
+    expect(response.status).toBe(204);
+  });
+
+  test("DELETE /projects, Should not be able to delete project with isActive = false", async () => {
+    const projectToBeDeleted = await request(app)
+      .get("/projects")
+      .set("Authorization", await adminToken());
+
+    const response = await request(app)
+      .delete(`/projects/${projectToBeDeleted.body.projects[0].id}`)
+      .set("Authorization", await adminToken());
+
+    expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("DELETE /projects, Should not be able to delete project with invalid id", async () => {
+    const response = await request(app)
+      .delete("/projects/56516144")
+      .set("Authorization", await adminToken());
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("message");
   });
 });
