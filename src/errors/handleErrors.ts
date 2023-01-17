@@ -14,10 +14,6 @@ export const handleError = async (
     });
   }
 
-  // if (error.message.includes("invalid input syntax")) {
-  //   return res.status(404).json({ message: "invalid input syntax" });
-  // }
-
   if (error instanceof ValidationError) {
     return res.status(400).json({ message: error.errors });
   }
