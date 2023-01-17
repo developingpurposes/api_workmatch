@@ -18,6 +18,7 @@ import {
 import { Users } from "../../entities/users.entity";
 import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
 import { userForgotPasswordController } from "../../controllers/users/userForgotPassword.controller";
+import { userResetPasswordController } from "../../controllers/users/userResetPassword.controller";
 
 export const userRoutes = Router();
 
@@ -64,3 +65,8 @@ userRoutes.post(
   ensureDataIsValidUserForgotPasswordMiddleware(userForgotPasswordSerializer),
   userForgotPasswordController
 );
+
+userRoutes.get(
+  "/resetpassword/:token",
+  userResetPasswordController
+)
