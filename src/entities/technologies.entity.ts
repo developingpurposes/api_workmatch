@@ -15,7 +15,7 @@ export class Technologies {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, })
   name: string;
 
   @Column()

@@ -3,6 +3,7 @@ import { createProjectsController } from "../../controllers/projects/createProje
 import { deleteProjectsController } from "../../controllers/projects/deleteProject.controller";
 import { queueConfirmController } from "../../controllers/projects/joinProjectConfirmController";
 import { joinQueueProjectsController } from "../../controllers/projects/joinQueueProjects.controller";
+import { listJoinedProjectsController } from "../../controllers/projects/listJoinedProjects.controller";
 import { listsProjectsController } from "../../controllers/projects/listProject.controller";
 import { listQueueProjectsController } from "../../controllers/projects/listQueueProjects.controller";
 import { listUserProjectsController } from "../../controllers/projects/listUserProjects.controller";
@@ -52,6 +53,12 @@ projectsRoutes.get(
   ensureAuthMiddleware,
   ensureIdIsValidMiddleware(Users),
   listUserProjectsController
+);
+
+projectsRoutes.get(
+  "/joinedprojects",
+  ensureAuthMiddleware,
+  listJoinedProjectsController
 );
 
 projectsRoutes.get(
