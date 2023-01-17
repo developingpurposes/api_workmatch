@@ -22,7 +22,7 @@ export const ensureIsOwnerMiddleware = async (
     .getOne();
 
   if (projectSearch.owner.id !== userId) {
-    throw new AppError("User not authorization!", 401);
+    throw new AppError("Missing authorization!", 401);
   }
   next();
 };
