@@ -36,7 +36,7 @@ describe("/project", () => {
   });
 
   test("POST /projects, Should be able to create project", async () => {
-    const registerResponse = await request(app)
+    await request(app)
       .post("/users")
       .send(mockedAdminUserCreate);
 
