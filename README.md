@@ -263,8 +263,8 @@ STATUS: 200 OK
 
 | Código do Erro   | Descrição                  |
 | ---------------- | -------------------------- |
-| 409 Forbidden    | Missing admin permissions. |
-| 401 Unauthorized | invalid signature          |
+| 403 Forbidden    | Missing admin permissions. |
+| 401 Unauthorized | Invalid signature          |
 
 ---
 
@@ -274,15 +274,15 @@ STATUS: 200 OK
 
 ### `GET /users/:id`
 
-### Exemplo de Request:
-
 ### Parâmetros da Requisição:
 
-| Parâmetro | Tipo   | Descrição                             |
-| --------- | ------ | ------------------------------------- |
-| id        | string | Identificador único do usuário (User) |
+| Parâmetro | Tipo   | Descrição            |
+| --------- | ------ | -------------------- |
+| id        | string | ID do usuário (User) |
 
-### Corpo da Requisição:
+|
+
+### Body para a Requisição:
 
 ```json
 No-Body
@@ -327,6 +327,12 @@ No-Body
 
 ### `PATCH /users/:id`
 
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição     |
+| --------- | ------ | ------------- |
+| id        | string | ID do usuário |
+
 ### Body para a requisição:
 
 ```json
@@ -366,7 +372,7 @@ STATUS: 200 OK
 
 | Código do Erro   | Descrição                  |
 | ---------------- | -------------------------- |
-| 409 Forbidden    | Missing admin permissions. |
+| 403 Forbidden    | Missing admin permissions. |
 | 401 Unauthorized | invalid signature          |
 
 ---
@@ -376,6 +382,12 @@ STATUS: 200 OK
 [ Voltar aos Endpoints ](#4-endpoints)
 
 ### `DELETE /users/:id`
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição     |
+| --------- | ------ | ------------- |
+| id        | string | ID do usuário |
 
 ### Body para a requisição:
 
@@ -393,8 +405,8 @@ STATUS: 204 - No Content
 
 | Código do Erro   | Descrição                  |
 | ---------------- | -------------------------- |
-| 409 Forbidden    | Missing admin permissions. |
-| 401 Unauthorized | invalid signature          |
+| 403 Forbidden    | Missing admin permissions. |
+| 401 Unauthorized | Invalid signature          |
 
 ---
 
@@ -536,12 +548,12 @@ STATUS: 201 Created
 
 ### Possíveis Erros:
 
-| Código do Erro   | Descrição                        |
-| ---------------- | -------------------------------- |
-| 401 Unauthorized | Invalid token                    |
-| 400 Bad request  | Name is a required field         |
-| 400 Bad request  | maxTeamSize is a required field  |
-| 400 Bad request  | technologies is a required field |
+| Código do Erro   | Descrição                          |
+| ---------------- | ---------------------------------- |
+| 401 Unauthorized | Invalid token                      |
+| 400 Bad request  | "name" is a required field         |
+| 400 Bad request  | "maxTeamSize" is a required field  |
+| 400 Bad request  | "technologies" is a required field |
 
 ---
 
@@ -653,6 +665,12 @@ STATUS: 200 Ok
 
 ### `GET /projects/user/:id`
 
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição     |
+| --------- | ------ | ------------- |
+| id        | string | ID do usuário |
+
 ### Body para a requisição:
 
 ```json
@@ -723,6 +741,12 @@ STATUS: 200 Ok
 
 ### `GET /projects/:id/queue`
 
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição     |
+| --------- | ------ | ------------- |
+| id        | string | ID do projeto |
+
 ### Body para a requisição:
 
 ```json
@@ -755,6 +779,12 @@ STATUS: 200 Ok
 [ Voltar para os Endpoints ](#4-endpoints)
 
 ### `PATCH /projects/:id`
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição     |
+| --------- | ------ | ------------- |
+| id        | string | ID do projeto |
 
 ### Body para a requisição:
 
@@ -803,6 +833,12 @@ STATUS: 200 Ok
 
 ### `PATCH /projects/joinqueue/:id`
 
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição     |
+| --------- | ------ | ------------- |
+| id        | string | ID do projeto |
+
 ### Body para a requisição:
 
 ```json
@@ -838,6 +874,12 @@ STATUS: 200 Ok
 [ Voltar para os Endpoints ](#4-endpoints)
 
 ### `DELETE /projects/:id`
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição     |
+| --------- | ------ | ------------- |
+| id        | string | ID do projeto |
 
 ### Body para a requisição:
 
@@ -930,8 +972,8 @@ STATUS: 201 Created
 | ---------------- | -------------------------------- |
 | 401 Unauthorized | Invalid token                    |
 | 401 Unauthorized | User must have admin permissions |
-| 400 Bad request  | Name is a required field         |
-| 400 Bad request  | Icon is a required field         |
+| 400 Bad request  | "name" is a required field       |
+| 400 Bad request  | "icon" is a required field       |
 | 409 Conflict     | Technologies already exists      |
 
 ---
@@ -989,6 +1031,12 @@ STATUS: 200 OK
 
 ### `PATCH /technologies/:id`
 
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição        |
+| --------- | ------ | ---------------- |
+| id        | string | ID da tecnologia |
+
 ### Body para a requisição:
 
 ```json
@@ -1032,6 +1080,12 @@ STATUS: 200 OK
 [ Voltar para os Endpoints ](#4-endpoints)
 
 ### `DELETE /technologies/:id`
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição        |
+| --------- | ------ | ---------------- |
+| id        | string | ID da tecnologia |
 
 ### Body para a requisição:
 
