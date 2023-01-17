@@ -45,7 +45,7 @@ export const createdUserSendEmail = async (name:string, email:string) => {
 
      await transporter.sendMail(messageInfo)
      .then(() => {
-          console.log('Email send')
+          console.log('Email sent')
       }).catch((err) => {
           console.log(err)
           throw new AppError('Error sending email, try again later')
