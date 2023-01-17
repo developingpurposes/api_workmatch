@@ -7,15 +7,18 @@ import { listUsersController } from "../../controllers/users/listUsers.controlle
 import { getUserController } from "../../controllers/users/getUser.controller";
 import { patchUserController } from "../../controllers/users/patchUser.controller";
 import { deleteUserController } from "../../controllers/users/deleteUser.controller";
-import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
+import { ensureDataIsValidMiddleware, ensureDataIsValidUserForgotPasswordMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
 import { updateSerializerProjects } from "../../serializers/projects/projects.serializer";
 import { ensureTechnologyMiddleware } from "../../middlewares/ensureTechnology.middleware";
 import {
   responseUserSerializer,
   updatedUserSerializer,
+  userForgotPasswordSerializer,
 } from "../../serializers/users/users.serializers";
 import { Users } from "../../entities/users.entity";
 import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
+import { userForgotPasswordController } from "../../controllers/users/userForgotPassword.controller";
+import { userResetPasswordController } from "../../controllers/users/userResetPassword.controller";
 
 export const userRoutes = Router();
 
@@ -56,3 +59,14 @@ userRoutes.delete(
   ensureIdIsValidMiddleware(Users),
   deleteUserController
 );
+
+userRoutes.post(
+  "/forgotpassword",
+  ensureDataIsValidUserForgotPasswordMiddleware(userForgotPasswordSerializer),
+  userForgotPasswordController
+);
+
+userRoutes.get(
+  "/resetpassword/:token",
+  userResetPasswordController
+)

@@ -67,6 +67,9 @@ export class Users {
     }
   }
 
+  @Column({ default: null, nullable: true })
+  forgotPassword: string;  
+
   @OneToMany(() => Projects, (projects) => projects.owner)
   projects: Projects[];
 

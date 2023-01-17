@@ -1,4 +1,5 @@
 import AppDataSource from "../../data-source";
+import { createdUserSendEmail } from "../../email/createdUser.email";
 import { Users } from "../../entities/users.entity";
 import { AppError } from "../../errors/appError";
 import { IUser, IUserRequest } from "../../interfaces/users/user.interface";
@@ -24,6 +25,8 @@ export const createUserService = async (
     stripUnknown: true,
     abortEarly: false,
   });
-
+  
+  await createdUserSendEmail(userData.name, userData.email)
+  
   return userResponse;
 };

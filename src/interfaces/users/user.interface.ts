@@ -32,6 +32,7 @@ export interface IUser {
   updatedAt: Date;
   deletedAt: Date;
   usersTechs?: string[];
+  forgotPassword?: string;
 }
 
 export interface IUserUpdate {
@@ -51,3 +52,8 @@ export interface IUserResponse {
   totalPages: number;
   users: IUser[];
 }
+
+export interface IUserForgotPassword{
+  email: string;
+}
+

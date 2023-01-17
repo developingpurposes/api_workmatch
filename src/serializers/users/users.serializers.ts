@@ -4,6 +4,7 @@ import { SchemaOf } from "yup";
 import { ITechnologyReturn } from "../../interfaces/technologies/technologies.interface";
 import {
   IUser,
+  IUserForgotPassword,
   IUserLogin,
   IUserRequest,
   IUserUpdate,
@@ -48,6 +49,7 @@ export const responseUserSerializer: SchemaOf<IUser> = yup.object().shape({
   updatedAt: yup.date(),
   deletedAt: yup.date().nullable(),
   usersTechs: yup.array().nullable().notRequired(),
+  forgotPassword: yup.string().nullable().notRequired()
 });
 
 export const listUsersSerializer = yup.array(responseUserSerializer);
@@ -76,6 +78,7 @@ export const usersListSerializer: yup.SchemaOf<IUser[]> = yup.array().of(
     updatedAt: yup.date(),
     deletedAt: yup.date().nullable(),
     usersTechs: yup.array().nullable().notRequired(),
+    forgotPassword: yup.string().nullable().notRequired()
   })
 );
 
@@ -103,4 +106,9 @@ export const userListSerializer: yup.SchemaOf<IUser> =
     updatedAt: yup.date(),
     deletedAt: yup.date().nullable(),
     usersTechs: yup.array().nullable().notRequired(),
+    forgotPassword: yup.string().nullable().notRequired()
   });
+
+export const userForgotPasswordSerializer:SchemaOf<IUserForgotPassword> = yup.object().shape({
+    email: yup.string().email().required()
+})
