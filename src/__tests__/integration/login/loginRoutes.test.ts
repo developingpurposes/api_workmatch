@@ -6,6 +6,7 @@ import {
   mockedAdminLoginRequest,
   mockedLoginRequest,
 } from "../../mocks/integration/login.mock";
+import { adminToken } from "../../mocks/integration/token.mocks";
 import {
   mockedAdminUserCreate,
   mockedUserCreate,
@@ -48,12 +49,10 @@ describe("/login", () => {
     const userToDeleteResponse = await request(app)
       .post("/users")
       .send(mockedAdminUserCreate);
-    const responseAdminLogin = await request(app)
-      .post("/login")
-      .send(mockedAdminLoginRequest);
+
     await request(app)
       .delete(`/users/${userToDeleteResponse.body.id}`)
-      .set("Authorization", `Bearer ${responseAdminLogin.body.token}`);
+      .set("Authorization", await adminToken());
     const response = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
