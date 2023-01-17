@@ -2,9 +2,9 @@ import dataSource from "../../data-source";
 import { Projects_queue } from "../../entities/projects_queue";
 import { AppError } from "../../errors/appError";
 
-export const joinProjectConfirmService = async (
+export const queueConfirmService = async (
   ownerId: string,
-  userId: string
+  queueId: string
 ): Promise<string> => {
   const projectsQeueRepository = dataSource.getRepository(Projects_queue);
 
@@ -15,7 +15,7 @@ export const joinProjectConfirmService = async (
     .leftJoinAndSelect("projectsQueue.projects", "projects")
     .leftJoinAndSelect("projects.owner", "owner")
     .leftJoinAndSelect("projectsQueue.user", "user")
-    .where("user.id = :id", { id: userId })
+    .where("projectsQueue.id = :id", { id: queueId })
     .withDeleted()
     .getOne();
 
@@ -23,10 +23,14 @@ export const joinProjectConfirmService = async (
     throw new AppError("You are not the owner of the project", 401);
   }
 
+  if (projectQueueSearch.isConfirmed) {
+    throw new AppError("You already confirmed on this project", 409);
+  }
 
   await projectsQeueRepository.save({
     ...projectQueueSearch,
     isConfirmed: true,
   });
-  return "You confirm this user on the project";
+
+  return "You confirmed this user on the project";
 };

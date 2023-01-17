@@ -78,5 +78,6 @@ export const listSerializerProjectsQueue: yup.SchemaOf<IProjectQueue[]> = yup
         email: yup.string().required(),
         id: yup.string().required(),
       }),
+      id: yup.string().required(),
     })
   );

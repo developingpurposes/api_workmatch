@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createProjectsController } from "../../controllers/projects/createProject.controller";
 import { deleteProjectsController } from "../../controllers/projects/deleteProject.controller";
-import { joinProjectConfirmController } from "../../controllers/projects/joinProjectConfirmController";
+import { queueConfirmController } from "../../controllers/projects/joinProjectConfirmController";
 import { joinQueueProjectsController } from "../../controllers/projects/joinQueueProjects.controller";
 import { listsProjectsController } from "../../controllers/projects/listProject.controller";
 import { listQueueProjectsController } from "../../controllers/projects/listQueueProjects.controller";
@@ -38,11 +38,11 @@ projectsRoutes.post(
   joinQueueProjectsController
 );
 
-projectsRoutes.post(
+projectsRoutes.patch(
   "/confirmuser/:id",
   ensureAuthMiddleware,
-  ensureIdIsValidMiddleware(Users),
-  joinProjectConfirmController
+  ensureIdIsValidMiddleware(Projects_queue),
+  queueConfirmController
 );
 
 projectsRoutes.get("", ensureAuthMiddleware, listsProjectsController);
