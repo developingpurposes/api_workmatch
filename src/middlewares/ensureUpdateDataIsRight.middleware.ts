@@ -16,7 +16,7 @@ export const ensureUpdateDataIsRightMiddleware = async(req: Request, res: Respon
     innerJoinAndSelect("technologies.userTechs", "users_technologies").
     innerJoinAndSelect("users_technologies.user", "users").
     where("users_technologies.user = :user", {user: user}).
-    where("users_technologies.technology = :technology", {technology: technology}).
+    where("users_technologies.technologies = :technology", {technology: technology}).
     getOne() 
 
     if (combinationExists) {
