@@ -11,7 +11,7 @@ export const userForgotPasswordService = async (emailUser: string) => {
      const userExists = await repositoryUser.findOne({ where: { email: emailUser } })
     
      if (!userExists) {
-          throw new AppError("user don't exist",409)
+          throw new AppError("user don't exist",404)
      }
      
 
