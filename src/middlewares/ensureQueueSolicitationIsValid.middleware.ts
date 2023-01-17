@@ -19,14 +19,6 @@ export const ensureQueueSolicitationIsValidMiddleware = async(req: Request, res:
         throw new AppError("This solicitation was already send", 401)
     }
 
-    // const loggedUserProject = await projectRepository.findOneBy({
-    //     id: queueData.projectId,
-    //     user: req.user.id
-    // })
-
-        // if(loggedUserProject){
-        //     throw new AppError("You can't participate on your own project", 401)
-        // }
         
     const project = await projectRepository.findOneBy({
         id: queueData.projectId
