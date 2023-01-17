@@ -15,7 +15,7 @@ export const ensureIsAdminMiddleware = async (
 
   if (userLogged.id != req.params.id && !userLogged.isAdm) {
     return res.status(403).json({
-      message: "missing admin permissions",
+      message: "Missing admin permissions",
     });
   }
 
