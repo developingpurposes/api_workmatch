@@ -122,6 +122,22 @@ describe("/technologies", () => {
     expect(response.status).toBe(403);
   });
 
+  test("PATCH /technologies, Should not be able to edit Technology without authentication", async () => {
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", await adminToken());
+
+    const response = await request(app)
+      .patch(`/technologies/${techs.body[0].id}`)
+      .send({
+        name: "React Native 2",
+        icon: "http://reactNative.com",
+      })
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
   test("DELETE /technologies:id, User should not be able to delete Technology", async () => {
     await request(app).post("/users").send(mockedUserCreate);
     const techs = await request(app)
