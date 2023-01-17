@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { createProjectsController } from "../../controllers/projects/createProject.controller";
 import { deleteProjectsController } from "../../controllers/projects/deleteProject.controller";
-import { joinProjectConfirmController } from "../../controllers/projects/joinProjectConfirmController";
+import { queueConfirmController } from "../../controllers/projects/joinProjectConfirmController";
 import { joinQueueProjectsController } from "../../controllers/projects/joinQueueProjects.controller";
 import { listJoinedProjectsController } from "../../controllers/projects/listJoinedProjects.controller";
 import { listsProjectsController } from "../../controllers/projects/listProject.controller";
+import { listQueueProjectsController } from "../../controllers/projects/listQueueProjects.controller";
 import { listUserProjectsController } from "../../controllers/projects/listUserProjects.controller";
 import { updateProjectsController } from "../../controllers/projects/updateProjects.controller";
 import { Projects } from "../../entities/projects.entity";
@@ -14,6 +15,7 @@ import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid
 import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
 import { ensureIsAdminMiddleware } from "../../middlewares/ensureIsAdmin.middleware";
 import { ensureIsOwnerMiddleware } from "../../middlewares/ensureIsOwner.middleware";
+import { ensureProjectIsExistMiddleware } from "../../middlewares/ensureProjectsIsExist.middleware";
 import { ensureAuthMiddleware } from "../../middlewares/esureAuth.middleware";
 import {
   createdSerializerProjects,
@@ -26,6 +28,7 @@ projectsRoutes.post(
   "",
   ensureAuthMiddleware,
   ensureDataIsValidMiddleware(createdSerializerProjects),
+  ensureProjectIsExistMiddleware,
   createProjectsController
 );
 
@@ -36,11 +39,11 @@ projectsRoutes.post(
   joinQueueProjectsController
 );
 
-projectsRoutes.post(
+projectsRoutes.patch(
   "/confirmuser/:id",
   ensureAuthMiddleware,
-  ensureIdIsValidMiddleware(Users),
-  joinProjectConfirmController
+  ensureIdIsValidMiddleware(Projects_queue),
+  queueConfirmController
 );
 
 projectsRoutes.get("", ensureAuthMiddleware, listsProjectsController);
@@ -56,6 +59,14 @@ projectsRoutes.get(
   "/joinedprojects",
   ensureAuthMiddleware,
   listJoinedProjectsController
+);
+
+projectsRoutes.get(
+  "/:id/queue",
+  ensureAuthMiddleware,
+  ensureIdIsValidMiddleware(Projects),
+  ensureIsOwnerMiddleware,
+  listQueueProjectsController
 );
 
 projectsRoutes.patch(

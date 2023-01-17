@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
-import { joinProjectConfirmService } from "../../services/projects/joinprojectConfirm.service";
+import { queueConfirmService } from "../../services/projects/joinprojectConfirm.service";
 
+export const queueConfirmController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const ownerId: string = req.user.id;
 
-export const joinProjectConfirmController = async (req: Request, res:Response): Promise<Response> => {
+  const queueId: string = req.params.id;
 
-    const ownerId: string = req.user.id
-    
-    const userId: string = req.params.id
+  const data = await queueConfirmService(ownerId, queueId);
 
-    const data = await joinProjectConfirmService(ownerId, userId)
-
-    return res.status(200).json({message:data})
-}
+  return res.status(200).json({ message: data });
+};

@@ -1,5 +1,6 @@
 import dataSource from "../../data-source";
 import { Projects } from "../../entities/projects.entity";
+import { AppError } from "../../errors/appError";
 import {
   IProject,
   IProjectResponse,
@@ -13,7 +14,12 @@ export const listsProjectsServices = async (
   const count = await dataSource
     .createQueryBuilder(Projects, "projects")
     .select("COUNT(projects.id)")
+    .withDeleted()
     .getCount();
+
+  if (!count) {
+    throw new AppError("empty list", 404);
+  }
 
   const totalPages: number = Math.ceil(count / limit);
 
@@ -21,17 +27,21 @@ export const listsProjectsServices = async (
 
   const validatedPage = isNotPage > totalPages ? totalPages : isNotPage;
 
-  const skip: number = validatedPage * limit - limit;
+  const skip: number = Math.abs(validatedPage * limit - limit);
 
   let nextPage: string =
     totalPages <= validatedPage
       ? null
-      : `http://localhost:3000/projects?page=${validatedPage + 1}`;
+      : `https://backend-workmatch.onrender.com/projects?page=${
+          validatedPage + 1
+        }`;
 
   let previousPage: string =
     skip * limit <= 1
       ? null
-      : `http://localhost:3000/projects?page=${validatedPage - 1}`;
+      : `https://backend-workmatch.onrender.com/projects?page=${
+          validatedPage - 1
+        }`;
 
   const projects = await dataSource
     .createQueryBuilder()

@@ -317,7 +317,8 @@ describe("/project", () => {
 
       .set("Authorization", token);
 
-    expect(response.body).toHaveProperty("message");
+    expect(response.body.listQueue).toHaveLength(1);
+    expect(response.body.listQueue[0].user).toHaveProperty("id");
     expect(response.status).toBe(200);
   });
 
@@ -331,10 +332,9 @@ describe("/project", () => {
       .get("/projects")
       .set("Authorization", token);
 
-    const response = await request(app)
-      .get(`/projects/${project.body.projects[0].id}/queue`)
-
-      .set("Authorization", token);
+    const response = await request(app).get(
+      `/projects/${project.body.projects[0].id}/queue`
+    );
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
@@ -378,14 +378,16 @@ describe("/project", () => {
       .set("Authorization", adminToken);
 
     const response = await request(app)
-      .get(`/projects/acceptparticipant/${participantToUpdate.body[0].id}`)
+      .patch(
+        `/projects/confirmuser/${participantToUpdate.body.listQueue[0].id}`
+      )
       .set("Authorization", token);
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /projects, shouldbe able to accept participants", async () => {
+  test("PATCH /projects, should be able to accept participants", async () => {
     const loginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLoginRequest);
@@ -400,7 +402,9 @@ describe("/project", () => {
       .set("Authorization", token);
 
     const response = await request(app)
-      .get(`/projects/acceptparticipant/${projectParticipants.body[0].id}`)
+      .patch(
+        `/projects/confirmuser/${projectParticipants.body.listQueue[0].id}`
+      )
       .set("Authorization", token);
 
     expect(response.body).toHaveProperty("message");

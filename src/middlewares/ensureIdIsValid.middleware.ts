@@ -13,7 +13,7 @@ export const ensureIdIsValidMiddleware =
     const repository = AppDataSource.getRepository(entity);
 
     const idData = await repository.findOne({
-      where: { id: req.params.id },
+      where: { id: id },
       withDeleted: true,
     });
 

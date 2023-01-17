@@ -263,7 +263,7 @@ describe("/users", () => {
       .send(mockedLoginRequest);
 
     const response = await request(app)
-      .delete(`/users/${userTobeDeleted.body.users[1].id}`)
+      .delete(`/users/${userTobeDeleted.body.users[0].id}`)
       .set("Authorization", `Bearer ${loginResponse.body.token}`);
 
     expect(response.status).toBe(403);
