@@ -1,18 +1,17 @@
 import dataSource from "../../data-source";
-import { Projects } from "../../entities/projects.entity";
 import { Projects_queue } from "../../entities/projects_queue";
 import { AppError } from "../../errors/appError";
 import {
-  IProject,
-  IProjectResponse,
+  IJoinedProject,
+  IJoinedProjectResponse
 } from "../../interfaces/projects/projects.interface";
-import { listSerializerProjects } from "../../serializers/projects/projects.serializer";
+import { listSerializerJoinedProjects } from "../../serializers/projects/projects.serializer";
 
-export const listJoinedProjectsServices = async (
+export const listJoinedProjectsService = async (
   limit: number,
   page: number,
   userId: string
-): Promise<IProjectResponse> => {
+): Promise<IJoinedProjectResponse> => {
   const count = await dataSource
     .createQueryBuilder(Projects_queue, "projectsQueue")
     .select("COUNT(projectsQueue.id)")
@@ -56,7 +55,7 @@ export const listJoinedProjectsServices = async (
       .where("projectsQueue.isConfirmed = :isConfirmed",  { isConfirmed: true })
       .getMany();
 
-  const validatedData: IProject[] = await listSerializerProjects.validate(
+  const validatedData: IJoinedProject[] = await listSerializerJoinedProjects.validate(
     projects,
     {
       abortEarly: false,
@@ -68,7 +67,7 @@ export const listJoinedProjectsServices = async (
     nextPage: nextPage,
     previousPage: previousPage,
     totalPages: totalPages,
-    projects: validatedData,
+    userProjects: validatedData,
   };
 
   return projectResponse;

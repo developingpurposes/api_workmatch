@@ -1,6 +1,3 @@
-import { IUpdateTechnology } from "../technologies/technologies.interface";
-import { IUserUpdate } from "../users/user.interface";
-
 export interface IProjectResponse {
   nextPage: string;
   previousPage: string;
@@ -19,6 +16,19 @@ export interface IProject {
   deletedAt: Date;
   owner: IOwner;
   projectTechs: IProjectTechs[];
+}
+
+export interface IJoinedProjectResponse {
+  nextPage: string;
+  previousPage: string;
+  totalPages: number;
+  userProjects: IJoinedProject[];
+}
+
+export interface IJoinedProject {
+  id: string;
+  isConfirmed: boolean;
+  projects: IProject
 }
 
 interface IOwner {

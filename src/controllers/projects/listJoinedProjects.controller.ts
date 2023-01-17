@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { listJoinedProjectsServices } from "../../services/projects/listJoinedProjects.services";
+import { listJoinedProjectsService } from "../../services/projects/listJoinedProjects.service";
 
 export const listJoinedProjectsController = async (
   req: Request,
@@ -11,7 +11,7 @@ export const listJoinedProjectsController = async (
 
   const userId: string = req.user.id;
 
-  const data = await listJoinedProjectsServices(limit, page, userId);
+  const data = await listJoinedProjectsService(limit, page, userId);
 
   return res.status(200).json(data);
 };
