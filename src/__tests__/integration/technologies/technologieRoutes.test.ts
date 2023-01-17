@@ -43,6 +43,23 @@ describe("/technologies", () => {
     expect(response.status).toBe(201);
   });
 
+  test("GET /technologies, Should be able to list technologies", async ()=> {
+    const techs = await request(app)
+    .get("/technologies")
+    .set("Authorization", await adminToken());
+
+    expect(techs.status).toBe(200)
+    expect(techs.body).toHaveProperty("length")
+  })
+
+  test("GET /technologies, Should not be able to list technologies without authentication", async ()=> {
+    const techs = await request(app)
+    .get("/technologies")
+
+    expect(techs.status).toBe(401)
+    expect(techs.body).toHaveProperty("message")
+  })
+
   test("POST /technologies, Users Should NOT be able to create Technology", async () => {
     await request(app).post("/users").send(mockedUserCreate);
     const response = await request(app)
