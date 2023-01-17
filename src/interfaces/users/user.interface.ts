@@ -52,3 +52,8 @@ export interface IUserResponse {
   totalPages: number;
   users: IUser[];
 }
+
+export interface IUserForgotPassword{
+  email: string;
+}
+

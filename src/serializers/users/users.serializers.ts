@@ -4,6 +4,7 @@ import { SchemaOf } from "yup";
 import { ITechnologyReturn } from "../../interfaces/technologies/technologies.interface";
 import {
   IUser,
+  IUserForgotPassword,
   IUserLogin,
   IUserRequest,
   IUserUpdate,
@@ -107,3 +108,7 @@ export const userListSerializer: yup.SchemaOf<IUser> =
     usersTechs: yup.array().nullable().notRequired(),
     forgotPassword: yup.string().nullable().notRequired()
   });
+
+export const userForgotPasswordSerializer:SchemaOf<IUserForgotPassword> = yup.object().shape({
+    email: yup.string().email().required()
+})
