@@ -20,8 +20,8 @@ technologiesRoutes.post(
   "",
   ensureAuthMiddleware,
   ensureIsAdminMiddleware,
-  ensureDataIsValidMiddleware(createdSerializerTechnologies),
   ensureTechnologyIsExistMiddleware,
+  ensureDataIsValidMiddleware(createdSerializerTechnologies),
   createTechnologiesController
 );
 
@@ -32,8 +32,8 @@ technologiesRoutes.patch(
   ensureAuthMiddleware,
   ensureIsAdminMiddleware,
   ensureIdIsValidMiddleware(Technologies),
-  ensureDataIsValidMiddleware(updateSerializerTechnologies),
   ensureTechnologyIsExistMiddleware,
+  ensureDataIsValidMiddleware(updateSerializerTechnologies),
   updateTechnologiesController
 );
 

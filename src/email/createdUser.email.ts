@@ -41,8 +41,6 @@ export const createdUserSendEmail = async (name:string, email:string) => {
           context: {name: name}
      }
 
-
-
      await transporter.sendMail(messageInfo)
      .then(() => {
           console.log('Email sent')

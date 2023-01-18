@@ -6,10 +6,15 @@ import { Users } from "../../entities/users.entity";
 import { AppError } from "../../errors/appError";
 import { In } from "typeorm";
 import { IProjectRequest } from "../../interfaces/projects/projects.interface";
+import * as yup from "yup";
 
 export const createProjectsServices = async (
   newProject: IProjectRequest
 ): Promise<Projects> => {
+  const validatedId = yup.string().uuid("Id not found!");
+
+  await validatedId.validate(newProject.ownerId);
+
   const technologiesIds = newProject.technologies;
   delete newProject.technologies;
 

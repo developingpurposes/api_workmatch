@@ -5,8 +5,6 @@ import { Technologies } from "../../entities/technologies.entity";
 import { IUserUpdate } from "../../interfaces/users/user.interface";
 import { Users } from "../../entities/users.entity";
 import { Users_technologies } from "../../entities/users_technologies.entity";
-import { userListSerializer } from "../../serializers/users/users.serializers";
-import { getUserService } from "./getUser.service";
 
 export const patchUserService = async (
   newData: IUserUpdate,

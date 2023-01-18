@@ -20,6 +20,7 @@ export const userSerializer: SchemaOf<IUserRequest> = yup.object().shape({
   name: yup.string().required(),
   email: yup.string().email().required(),
   password: yup.string().min(4).required(),
+  isAdm: yup.boolean().notRequired().default(false),
 });
 
 export const updatedUserSerializer: SchemaOf<IUserUpdate> = yup.object().shape({
@@ -35,21 +36,21 @@ export const updatedUserSerializer: SchemaOf<IUserUpdate> = yup.object().shape({
 });
 
 export const responseUserSerializer: SchemaOf<IUser> = yup.object().shape({
-  id: yup.string(),
-  email: yup.string().email(),
-  username: yup.string(),
-  name: yup.string(),
-  avatarUrl: yup.string().nullable().notRequired(),
-  bio: yup.string().nullable(),
-  level: yup.string().nullable(),
-  contact: yup.string().nullable(),
-  isActive: yup.boolean(),
-  isAdm: yup.boolean(),
-  createdAt: yup.date(),
-  updatedAt: yup.date(),
-  deletedAt: yup.date().nullable(),
-  usersTechs: yup.array().nullable().notRequired(),
   forgotPassword: yup.string().nullable().notRequired(),
+  usersTechs: yup.array().nullable().notRequired(),
+  deletedAt: yup.date().nullable(),
+  updatedAt: yup.date(),
+  createdAt: yup.date(),
+  isAdm: yup.boolean(),
+  isActive: yup.boolean(),
+  contact: yup.string().nullable(),
+  level: yup.string().nullable(),
+  bio: yup.string().nullable(),
+  avatarUrl: yup.string().nullable().notRequired(),
+  name: yup.string(),
+  username: yup.string(),
+  email: yup.string().email(),
+  id: yup.string(),
 });
 
 export const listUsersSerializer = yup.array(responseUserSerializer);

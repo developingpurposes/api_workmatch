@@ -69,5 +69,5 @@ export const joinQueueProjectsServices = async (
       user: userExist,
     }
   );
-  return "User joining the waitlist successfully!";
+  return "You joined in this project waiting list";
 };

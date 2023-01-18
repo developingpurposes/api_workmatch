@@ -7,9 +7,13 @@ export class Users_technologies {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Users, (user) => user.userTechs)
+  @ManyToOne(() => Users, (user) => user.userTechs, {
+    onDelete: "CASCADE",
+  })
   user: Users;
 
-  @ManyToOne(() => Technologies, (technologies) => technologies.userTechs)
+  @ManyToOne(() => Technologies, (technologies) => technologies.userTechs, {
+    onDelete: "CASCADE",
+  })
   technologies: Technologies;
 }
