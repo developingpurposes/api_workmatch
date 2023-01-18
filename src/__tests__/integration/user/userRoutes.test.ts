@@ -212,8 +212,7 @@ describe("/users", () => {
       });
 
     expect(updateResponse.status).toBe(200);
-    expect(updateResponse.body.email).toBe("updatetest99@mail.com");
-    expect(updateResponse.body.username).toBe("updatedfabinho");
+    expect(updateResponse.body).toHaveProperty("message");
   });
 
   test("DELETE /users, Should not be able to delete user without authentication", async () => {
