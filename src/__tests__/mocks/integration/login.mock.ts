@@ -1,5 +1,5 @@
 import {
-  IUderFieldLogin,
+  IUserFieldLogin,
   IUserLogin,
 } from "../../../interfaces/users/user.interface";
 
@@ -17,6 +17,6 @@ export const mockedAdminLoginRequest: IUserLogin = {
   password: "123456",
 };
 
-export const mockedInvalidFieldRequest: IUderFieldLogin = {
+export const mockedInvalidFieldRequest: IUserFieldLogin = {
   email: "",
 };
