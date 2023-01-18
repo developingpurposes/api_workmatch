@@ -3,7 +3,7 @@ import { Projects_queue } from "../../entities/projects_queue";
 import { AppError } from "../../errors/appError";
 import {
   IJoinedProject,
-  IJoinedProjectResponse
+  IJoinedProjectResponse,
 } from "../../interfaces/projects/projects.interface";
 import { listSerializerJoinedProjects } from "../../serializers/projects/projects.serializer";
 
@@ -17,12 +17,12 @@ export const listJoinedProjectsService = async (
     .select("COUNT(projectsQueue.id)")
     .leftJoinAndSelect("projectsQueue.user", "user")
     .where("user.id = :id", { id: userId })
-    .where("projectsQueue.isConfirmed = :isConfirmed",  { isConfirmed: true })
+    .where("projectsQueue.isConfirmed = :isConfirmed", { isConfirmed: true })
     .getCount();
 
-    if (!count) {
-        throw new AppError("empty list", 404);
-      }
+  if (!count) {
+    throw new AppError("empty list", 404);
+  }
 
   const totalPages: number = Math.ceil(count / limit);
 
@@ -35,33 +35,35 @@ export const listJoinedProjectsService = async (
   let nextPage: string =
     totalPages <= validatedPage
       ? null
-      : `https://backend-workmatch.onrender.com/projects/joinedprojects?page=${validatedPage + 1}`;
+      : `https://backend-workmatch.onrender.com/projects/joinedprojects?page=${
+          validatedPage + 1
+        }`;
 
   let previousPage: string =
     skip * limit <= 1
       ? null
-      : `https://backend-workmatch.onrender.com/projects/joinedprojects?page=${validatedPage - 1}`;
+      : `https://backend-workmatch.onrender.com/projects/joinedprojects?page=${
+          validatedPage - 1
+        }`;
 
-      const projects = await dataSource
-      .createQueryBuilder()
-      .from(Projects_queue, "projectsQueue")
-      .select("projectsQueue")
-      .leftJoinAndSelect("projectsQueue.user", "user")
-      .leftJoinAndSelect("projectsQueue.projects", "projects")
-      .leftJoinAndSelect("projects.owner", "owner")
-      .leftJoinAndSelect("projects.projectTechs", "projectTechs")
-      .leftJoinAndSelect("projectTechs.technologies", "technologies")
-      .where("user.id = :id", { id: userId })
-      .where("projectsQueue.isConfirmed = :isConfirmed",  { isConfirmed: true })
-      .getMany();
+  const projects = await dataSource
+    .createQueryBuilder()
+    .from(Projects_queue, "projectsQueue")
+    .select("projectsQueue")
+    .leftJoinAndSelect("projectsQueue.user", "user")
+    .leftJoinAndSelect("projectsQueue.projects", "projects")
+    .leftJoinAndSelect("projects.owner", "owner")
+    .leftJoinAndSelect("projects.projectTechs", "projectTechs")
+    .leftJoinAndSelect("projectTechs.technologies", "technologies")
+    .where("user.id = :id", { id: userId })
+    .andWhere("projectsQueue.isConfirmed = :isConfirmed", { isConfirmed: true })
+    .getMany();
 
-  const validatedData: IJoinedProject[] = await listSerializerJoinedProjects.validate(
-    projects,
-    {
+  const validatedData: IJoinedProject[] =
+    await listSerializerJoinedProjects.validate(projects, {
       abortEarly: false,
       stripUnknown: true,
-    }
-  );
+    });
 
   const projectResponse = {
     nextPage: nextPage,
