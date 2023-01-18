@@ -72,7 +72,6 @@ PGUSER="seuUsuario"
 PGPASSWORD="suasenha"
 PGDATABASE="umaNovaDatabase"
 SECRET_KEY="chavesecreta"
-
 ```
 
 ### 3.3. Migrations
@@ -81,7 +80,6 @@ Execute as migrations com o comando:
 
 ```
 yarn typeorm migration:run -d src/data-source.ts
-
 ```
 
 ---
@@ -503,8 +501,7 @@ O objeto Projects é definido como:
   "maxTeamSize": "7",
   "technologies": [
     "c2b5ee31-8e30-403c-8acf-5731695b64b2",
-    "260042bd-b7ce-45e3-bd68-f119554fb674"
-  ]
+    "260042bd-b7ce-45e3-bd68-f119554fb674"  
 }
 ```
 
