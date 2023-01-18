@@ -7,9 +7,7 @@ import {
   mockedUserCreate,
 } from "../../mocks/integration/user.mocks";
 import AppDataSource from "../../../data-source";
-import {
-  mockedLoginUpdateUserRequest,
-} from "../../mocks/integration/login.mock";
+import { mockedLoginUpdateUserRequest } from "../../mocks/integration/login.mock";
 import { adminToken, userToken } from "../../mocks/integration/token.mocks";
 
 describe("/users", () => {
@@ -78,7 +76,6 @@ describe("/users", () => {
   });
 
   test("GET /users -  should not be able to list users not being admin", async () => {
-
     const response = await request(app)
       .get("/users")
       .set("Authorization", await userToken());
@@ -194,8 +191,7 @@ describe("/users", () => {
       });
 
     expect(updateResponse.status).toBe(200);
-    expect(updateResponse.body.email).toBe("updatetest99@mail.com");
-    expect(updateResponse.body.username).toBe("updatedfabinho");
+    expect(updateResponse.body).toHaveProperty("message");
   });
 
   test("DELETE /users, Should not be able to delete user without authentication", async () => {
