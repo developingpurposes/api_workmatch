@@ -111,8 +111,9 @@ yarn typeorm migration:run -d src/data-source.ts
   - [GET - /projects/user/:id](#33-listagem-de-projetos-criados-pelo-usuário)
   - [GET - /projects/:id/queue](#34-listagem-da-lista-de-espera-de-um-projeto)
   - [PATCH - /projects/:id](#34-atualização-dos-dados-de-um-projeto)
-  - [PATCH - /projects/joinqueue/:id](#35-fazer-alteração-de-usuários-na-fila-do-projetoconfirmar-ou-recusar)
-  - [DELETE /projects/:id](#36-deleção-de-um-projeto)
+  - [PATCH - /projects/joinqueue/:id](#35-rota-para-o-usuários-entrar-para-a-fila-de-espera-de-um-projeto)
+  - [PATCH - /projects/confirmusers/:id](#36-fazer-alteração-de-usuários-na-fila-do-projetoconfirmar-ou-recusar)
+  - [DELETE /projects/:id](#37-deleção-de-um-projeto)
 
 - [Technologies](#4-technologies)
   - [POST - /technologies](#41-criação-de-uma-tecnologia)
@@ -829,7 +830,7 @@ STATUS: 200 Ok
 
 ---
 
-### 3.5. **Fazer alteração de usuários na fila do projeto(confirmar ou recusar)**
+### 3.5. **Rota para o usuários entrar para a fila de espera de um projeto**
 
 [ Voltar para os Endpoints ](#4-endpoints)
 
@@ -845,7 +846,7 @@ STATUS: 200 Ok
 
 ```json
 {
-  "isConfirmed": "true"
+  "No-Body"
 }
 ```
 
@@ -857,21 +858,65 @@ STATUS: 200 Ok
 
 ```json
 {
-  ///Resposta - aguardando Davidson
+  "message:You joined in this project waiting list"
 }
 ```
 
 ### Possíveis Erros:
 
-| Código do Erro   | Descrição                        |
-| ---------------- | -------------------------------- |
-| 401 Unauthorized | Invalid token                    |
-| 401 Unauthorized | User must have admin permissions |
-| 400 Bad request  | This must be valid uuid          |
+| Código do Erro   | Descrição                              |
+| ---------------- | -------------------------------------- |
+| 401 Unauthorized | Invalid token                          |
+| 401 Unauthorized | You confirmed this user on the project |
+| 400 Bad request  | Id does not exists                     |
+| 409 Forbidden    | You already confirmed on this project  |
 
 ---
 
-### 3.6. **Deleção de um projeto**
+### 3.6. **Fazer alteração de usuários na fila do projeto(confirmar ou recusar)**
+
+[ Voltar para os Endpoints ](#4-endpoints)
+
+### `PATCH /projects/confirmuser/:id`
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição             |
+| --------- | ------ | --------------------- |
+| id        | string | ID da fila do projeto |
+
+### Body para a requisição:
+
+```json
+{
+  "No-Body"
+}
+```
+
+### Exemplo de Response:
+
+```
+STATUS: 200 Ok
+```
+
+```json
+{
+  "message:You confirmed this user in this project"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                              |
+| ---------------- | -------------------------------------- |
+| 401 Unauthorized | Invalid token                          |
+| 401 Unauthorized | You confirmed this user on the project |
+| 400 Bad request  | Id does not exists                     |
+| 409 Forbidden    | You already confirmed on this project  |
+
+---
+
+### 3.7. **Deleção de um projeto**
 
 [ Voltar para os Endpoints ](#4-endpoints)
 
