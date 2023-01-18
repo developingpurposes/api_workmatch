@@ -138,6 +138,22 @@ describe("/technologies", () => {
     expect(response.status).toBe(401);
   });
 
+  test("PATCH /technologies, Should not be able to edit Technology without a valid id", async () => {
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", await adminToken());
+
+    const response = await request(app)
+      .patch(`/technologies/652161653`)
+      .send({
+        name: "React Native 2",
+        icon: "http://reactNative.com",
+      })
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
   test("DELETE /technologies:id, User should not be able to delete Technology", async () => {
     await request(app).post("/users").send(mockedUserCreate);
     const techs = await request(app)
@@ -152,7 +168,7 @@ describe("/technologies", () => {
     expect(response.body).toHaveProperty("message");
   });
 
-  test("DELETE /technologies:id, Should not be possible to delete Technology without authentication", async () => {
+  test("DELETE /technologies:id, Should not be able to delete Technology without authentication", async () => {
     await request(app).post("/users").send(mockedUserCreate);
     const techs = await request(app)
       .get("/technologies")
@@ -166,7 +182,21 @@ describe("/technologies", () => {
     expect(response.body).toHaveProperty("message");
   });
 
-  test("DELETE /technologies:id, Admin should be possible to delete Technology", async () => {
+  test("DELETE /technologies:id, Should not be able to delete Technology without a valid id", async () => {
+    await request(app).post("/users").send(mockedUserCreate);
+    const techs = await request(app)
+      .get("/technologies")
+      .set("Authorization", await userToken());
+
+    const response = await request(app).delete(
+      '/technologies/1'
+    );
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("DELETE /technologies:id, Admin should be able to delete Technology", async () => {
     const techs = await request(app)
       .get("/technologies")
       .set("Authorization", await adminToken());
