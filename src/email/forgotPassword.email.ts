@@ -42,10 +42,10 @@ export const forgotPasswordSendEmail = async (email:string,link:string,name:stri
 
      await transporter.sendMail(messageInfo)
           .then(() => {
-          console.log('password recovery email sent')
+          console.log('Password recovery email sent')
           
       }).catch((err) => {
           console.log(err)
-          throw new AppError('Error sending email, try again later')
+          throw new AppError('Error to sending email, try again later')
       })
 }

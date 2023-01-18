@@ -62,7 +62,7 @@ describe("/project", () => {
     expect(response.status).toBe(201);
   });
 
-  test("POST /projects, should not be able to create projects with invalid data", async () => {
+  test("POST /projects, Should not be able to create projects with invalid data", async () => {
     const response = await request(app)
       .post("/projects")
       .set("Authorization", await userToken())
@@ -72,7 +72,7 @@ describe("/project", () => {
     expect(response.status).toBe(400);
   });
 
-  test("POST /projects, should not be able to create projects without authentication", async () => {
+  test("POST /projects, Should not be able to create projects without authentication", async () => {
     const response = await request(app)
       .post("/projects")
       .send(mockedProjectCreate);
@@ -149,7 +149,7 @@ describe("/project", () => {
     expect(response.body.name).toEqual("Teste");
   });
 
-  test("PATCH /projects/:id, should not be able to update projects without authentication", async () => {
+  test("PATCH /projects/:id, Should not be able to update projects without authentication", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
     const projectToUpdate = await request(app)
@@ -164,7 +164,7 @@ describe("/project", () => {
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /projects/:id, should not be able to update projects with invalid Id", async () => {
+  test("PATCH /projects/:id, Should not be able to update projects with invalid Id", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
     const response = await request(app)
@@ -176,7 +176,7 @@ describe("/project", () => {
     expect(response.status).toBe(400);
   });
 
-  test("PATCH /projects/:id, should not be able to update projects of other user without admin privileges", async () => {
+  test("PATCH /projects/:id, Should not be able to update projects of other user without admin privileges", async () => {
     const newData = { name: "Teste", description: "salve os gatineos" };
 
     const projectToUpdate = await request(app)
@@ -192,7 +192,7 @@ describe("/project", () => {
     expect(response.status).toBe(401);
   });
 
-  test("POST /projects/joinqueue/:id, should not be able to join projects without authentication", async () => {
+  test("POST /projects/joinqueue/:id, Should not be able to join projects without authentication", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await userToken());
@@ -205,7 +205,7 @@ describe("/project", () => {
     expect(response.status).toBe(401);
   });
 
-  test("POST /projects/joinqueue/:id, should not be able to join projects with invalid Id", async () => {
+  test("POST /projects/joinqueue/:id, Should not be able to join projects with invalid Id", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await userToken());
@@ -218,7 +218,7 @@ describe("/project", () => {
     expect(response.status).toBe(400);
   });
 
-  test("POST /projects/joinqueue/:id, should be able to join projects", async () => {
+  test("POST /projects/joinqueue/:id, Should be able to join projects", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await userToken());
@@ -231,7 +231,7 @@ describe("/project", () => {
     expect(response.status).toBe(200);
   });
 
-  test("POST /projects/joinqueue/:id, should not be able to join projects if already joined", async () => {
+  test("POST /projects/joinqueue/:id, Should not be able to join projects if you already joined", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await userToken());
@@ -244,7 +244,7 @@ describe("/project", () => {
     expect(response.status).toBe(409);
   });
 
-  test("POST /projects/joinqueue/:id, should not be able to join projects if you are owner of project", async () => {
+  test("POST /projects/joinqueue/:id, Should not be able to join projects if you are the owner of project", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await adminToken());
@@ -257,7 +257,7 @@ describe("/project", () => {
     expect(response.status).toBe(409);
   });
 
-  test("GET /projects/:id/queue, should be able to list all participants", async () => {
+  test("GET /projects/:id/queue, Should be able to list all participants", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await adminToken());
@@ -271,7 +271,7 @@ describe("/project", () => {
     expect(response.status).toBe(200);
   });
 
-  test("GET /projects/:id/queue, should not be able to list all participants whithout authentication", async () => {
+  test("GET /projects/:id/queue, Should not be able to list all participants whithout authentication", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await adminToken());
@@ -284,7 +284,7 @@ describe("/project", () => {
     expect(response.status).toBe(401);
   });
 
-  test("GET /projects/:id/queue, should not be able to list all participants with invalid Id", async () => {
+  test("GET /projects/:id/queue, Should not be able to list all participants with invalid Id", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await adminToken());
@@ -297,7 +297,7 @@ describe("/project", () => {
     expect(response.status).toBe(400);
   });
 
-  test("GET /projects/:id/queue, should not be able to list all participants if not owner", async () => {
+  test("GET /projects/:id/queue, Should not be able to list all participants if you're not the owner", async () => {
     const projectResponse = await request(app)
       .get("/projects")
       .set("Authorization", await userToken());
@@ -310,7 +310,7 @@ describe("/project", () => {
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /projects/confirmuser/:id, should not be able to accept participants if not owner", async () => {
+  test("PATCH /projects/confirmuser/:id, Should not be able to accept participants if you're not the owner", async () => {
     const projectToUpdate = await request(app)
       .get("/projects")
       .set("Authorization", await adminToken());
@@ -346,7 +346,7 @@ describe("/project", () => {
     expect(response.status).toBe(401);
   });
 
-  test("PATCH /projects/confirmuser/:id, should not be able to accept participants with invalid Id", async () => {
+  test("PATCH /projects/confirmuser/:id, Should not be able to accept participants with invalid Id", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await adminToken());
@@ -363,7 +363,7 @@ describe("/project", () => {
     expect(response.status).toBe(400);
   });
 
-  test("PATCH /projects/confirmuser/:id, should be able to accept participants", async () => {
+  test("PATCH /projects/confirmuser/:id, Should be able to accept participants", async () => {
     const project = await request(app)
       .get("/projects")
       .set("Authorization", await adminToken());
@@ -382,7 +382,7 @@ describe("/project", () => {
     expect(response.status).toBe(200);
   });
 
-  test("GET /projects -  Must be able to list joined projects", async () => {
+  test("GET /projects, Must be able to list joined projects", async () => {
     const response = await request(app)
       .get("/projects/joinedprojects")
       .set("Authorization", await adminToken());
