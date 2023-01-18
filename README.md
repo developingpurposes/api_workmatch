@@ -111,8 +111,8 @@ yarn typeorm migration:run -d src/data-source.ts
   - [GET - /projects/user/:id](#33-listagem-de-projetos-criados-pelo-usuário)
   - [GET - /projects/:id/queue](#34-listagem-da-lista-de-espera-de-um-projeto)
   - [PATCH - /projects/:id](#34-atualização-dos-dados-de-um-projeto)
-  - [PATCH - /projects/joinqueue/:id](#35-rota-para-o-usuários-entrar-para-a-fila-de-espera-de-um-projeto)
-  - [PATCH - /projects/confirmusers/:id](#36-fazer-alteração-de-usuários-na-fila-do-projetoconfirmar-ou-recusar)
+  - [POST - /projects/joinqueue/:id](#35-rota-para-o-usuários-entrar-para-a-fila-de-espera-de-um-projeto)
+  - [PATCH - /projects/confirmuser/:id](#36-fazer-alteração-de-usuários-na-fila-do-projetoconfirmar-ou-recusar)
   - [DELETE /projects/:id](#37-deleção-de-um-projeto)
 
 - [Technologies](#4-technologies)
@@ -832,7 +832,7 @@ STATUS: 200 Ok
 
 [ Voltar para os Endpoints ](#4-endpoints)
 
-### `PATCH /projects/joinqueue/:id`
+### `POST /projects/joinqueue/:id`
 
 ### Parâmetros da Requisição:
 
