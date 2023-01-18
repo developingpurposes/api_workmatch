@@ -335,9 +335,7 @@ No-Body
 ### Body para a requisição:
 
 ```json
-{
-  "email": "teste@mail.com",
-  "password": "12345",
+{    
   "username": "Alteração do username",
   "name": "Ateração"
 }
@@ -351,19 +349,7 @@ STATUS: 200 OK
 
 ```json
 {
-  "deletedAt": null,
-  "updatedAt": "2023-01-12T07:15:03.238Z",
-  "createdAt": "2023-01-11T18:06:27.778Z",
-  "isAdm": false,
-  "isActive": true,
-  "contact": null,
-  "level": null,
-  "bio": null,
-  "avatarUrl": null,
-  "name": "Ateração",
-  "username": "Alteração do username",
-  "email": "teste@mail.com",
-  "id": "021ab19f-f2e1-453a-8c6f-f438769c67ff"
+  "message: User updated successfully"
 }
 ```
 
