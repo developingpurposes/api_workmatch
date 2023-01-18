@@ -28,7 +28,7 @@ export interface IJoinedProjectResponse {
 export interface IJoinedProject {
   id: string;
   isConfirmed: boolean;
-  projects: IProject
+  projects: IProject;
 }
 
 interface IOwner {
@@ -65,7 +65,7 @@ export interface IProjectRequest {
   imgUrl?: string;
   description?: string;
   maxTeamSize: number;
-  ownerId: string;
+  ownerId?: string;
   technologies: string[];
 }
 

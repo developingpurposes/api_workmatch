@@ -182,27 +182,29 @@ STATUS: 201 Created
 
 ```json
 {
-  "deletedAt": null,
-  "updatedAt": "2023-01-11T18:06:27.778Z",
-  "createdAt": "2023-01-11T18:06:27.778Z",
-  "isAdm": false,
-  "isActive": true,
-  "contact": null,
-  "level": null,
-  "bio": null,
+  "id": "c662d7db-57c9-4a79-aaa1-3fed8dd6f9d3",
+  "email": "davidson3@hotmail.com",
+  "username": "ReleaseTest",
+  "name": "Release",
   "avatarUrl": null,
-  "name": "Usuario",
-  "username": "user",
-  "email": "user@mail.com",
-  "id": "021ab19f-f2e1-453a-8c6f-f438769c67f"
+  "bio": null,
+  "level": null,
+  "contact": null,
+  "isActive": true,
+  "isAdm": true,
+  "createdAt": "2023-01-18T00:11:38.497Z",
+  "updatedAt": "2023-01-18T00:11:38.497Z",
+  "deletedAt": null,
+  "forgotPassword": null
 }
 ```
 
 ### Possíveis Erros:
 
-| Código do Erro | Descrição                                             |
-| -------------- | ----------------------------------------------------- |
-| 409 Conflict   | User already exists, try again with new informations. |
+| Código do Erro  | Descrição                                             |
+| --------------- | ----------------------------------------------------- |
+| 409 Conflict    | User already exists, try again with new informations. |
+| 400 Bad Request | Invalid field                                         |
 
 ---
 

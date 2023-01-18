@@ -10,6 +10,13 @@ export const mockedUserCreate: IUserRequest = {
   name: "Fabio",
 };
 
+export const mockedUserNotInfoCreate: IUserRequest = {
+  email: "",
+  password: "",
+  username: "",
+  name: "",
+};
+
 export const mockedUpdateUserCreate: IUserRequest = {
   email: "updatetest00@mail.com",
   password: "123456",

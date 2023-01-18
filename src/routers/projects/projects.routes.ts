@@ -27,8 +27,8 @@ export const projectsRoutes = Router();
 projectsRoutes.post(
   "",
   ensureAuthMiddleware,
-  ensureDataIsValidMiddleware(createdSerializerProjects),
   ensureProjectIsExistMiddleware,
+  ensureDataIsValidMiddleware(createdSerializerProjects),
   createProjectsController
 );
 
@@ -72,9 +72,9 @@ projectsRoutes.get(
 projectsRoutes.patch(
   "/:id",
   ensureAuthMiddleware,
-  ensureDataIsValidMiddleware(updateSerializerProjects),
   ensureIdIsValidMiddleware(Projects),
   ensureIsOwnerMiddleware,
+  ensureDataIsValidMiddleware(updateSerializerProjects),
   updateProjectsController
 );
 

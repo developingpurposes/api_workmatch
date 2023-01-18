@@ -6,7 +6,7 @@ export const createProjectsController = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const newProject: IProjectRequest = req.body;
+  const newProject: IProjectRequest = { ...req.body, ownerId: req.user.id };
 
   const data = await createProjectsServices(newProject);
 
