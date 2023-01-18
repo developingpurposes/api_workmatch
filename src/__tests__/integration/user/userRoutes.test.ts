@@ -127,6 +127,17 @@ describe("/users", () => {
     expect(response.status).toBe(404);
   });
 
+  test("GET /users/:id -  should not be able to list user without authentication", async () => {
+    const users = await request(app)
+      .get("/users")
+      .set("Authorization", await adminToken());
+
+    const response = await request(app).get(`/users/${users.body.users[0].id}`);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
   test("PATCH /users, Should not be able to update without authentication", async () => {
     const userToUpdate = await request(app)
       .get("/users")

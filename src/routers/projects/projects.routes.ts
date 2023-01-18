@@ -27,8 +27,8 @@ export const projectsRoutes = Router();
 projectsRoutes.post(
   "",
   ensureAuthMiddleware,
-  ensureProjectIsExistMiddleware,
   ensureDataIsValidMiddleware(createdSerializerProjects),
+  ensureProjectIsExistMiddleware,
   createProjectsController
 );
 

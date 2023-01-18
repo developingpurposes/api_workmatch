@@ -14,7 +14,6 @@ export const ensureUpdateDataIsRightMiddleware = async (
 
   const technologyRepository = AppDataSource.getRepository(Technologies);
 
-<<<<<<< HEAD
   const combinationExists = await technologyRepository
     .createQueryBuilder("technologies")
     .innerJoinAndSelect("technologies.userTechs", "users_technologies")
@@ -24,15 +23,6 @@ export const ensureUpdateDataIsRightMiddleware = async (
       technology: technology,
     })
     .getOne();
-=======
-    const combinationExists = await technologyRepository.
-    createQueryBuilder("technologies").
-    innerJoinAndSelect("technologies.userTechs", "users_technologies").
-    innerJoinAndSelect("users_technologies.user", "users").
-    where("users_technologies.user = :user", {user: user}).
-    where("users_technologies.technologies = :technology", {technology: technology}).
-    getOne() 
->>>>>>> fdb2bf3f93331523e372663e05991663cb89f848
 
   if (combinationExists) {
     throw new AppError(
