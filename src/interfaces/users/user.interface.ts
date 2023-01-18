@@ -3,7 +3,7 @@ export interface IUserLogin {
   password: string;
 }
 
-export interface IUderFieldLogin {
+export interface IUserFieldLogin {
   email?: string;
   password?: string;
 }
