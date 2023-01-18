@@ -28,7 +28,7 @@ Visão geral do projeto, um pouco das tecnologias usadas e os integrantes da equ
 - [Yup](https://www.npmjs.com/package/yup)
 
 A URL base da aplicação:
-https://backend-workmatch.onrender.com
+https://backend-workmatch-deploy.onrender.com
 
 Integrantes:
 
@@ -72,7 +72,6 @@ PGUSER="seuUsuario"
 PGPASSWORD="suasenha"
 PGDATABASE="umaNovaDatabase"
 SECRET_KEY="chavesecreta"
-
 ```
 
 ### 3.3. Migrations
@@ -81,7 +80,6 @@ Execute as migrations com o comando:
 
 ```
 yarn typeorm migration:run -d src/data-source.ts
-
 ```
 
 ---
@@ -111,8 +109,8 @@ yarn typeorm migration:run -d src/data-source.ts
   - [GET - /projects/user/:id](#33-listagem-de-projetos-criados-pelo-usuário)
   - [GET - /projects/:id/queue](#34-listagem-da-lista-de-espera-de-um-projeto)
   - [PATCH - /projects/:id](#34-atualização-dos-dados-de-um-projeto)
-  - [PATCH - /projects/joinqueue/:id](#35-rota-para-o-usuários-entrar-para-a-fila-de-espera-de-um-projeto)
-  - [PATCH - /projects/confirmusers/:id](#36-fazer-alteração-de-usuários-na-fila-do-projetoconfirmar-ou-recusar)
+  - [POST - /projects/joinqueue/:id](#35-rota-para-o-usuários-entrar-para-a-fila-de-espera-de-um-projeto)
+  - [PATCH - /projects/confirmuser/:id](#36-fazer-alteração-de-usuários-na-fila-do-projetoconfirmar-ou-recusar)
   - [DELETE /projects/:id](#37-deleção-de-um-projeto)
 
 - [Technologies](#4-technologies)
@@ -183,29 +181,27 @@ STATUS: 201 Created
 
 ```json
 {
-  "id": "c662d7db-57c9-4a79-aaa1-3fed8dd6f9d3",
-  "email": "davidson3@hotmail.com",
-  "username": "ReleaseTest",
-  "name": "Release",
-  "avatarUrl": null,
-  "bio": null,
-  "level": null,
-  "contact": null,
-  "isActive": true,
-  "isAdm": true,
-  "createdAt": "2023-01-18T00:11:38.497Z",
-  "updatedAt": "2023-01-18T00:11:38.497Z",
   "deletedAt": null,
-  "forgotPassword": null
+  "updatedAt": "2023-01-11T18:06:27.778Z",
+  "createdAt": "2023-01-11T18:06:27.778Z",
+  "isAdm": false,
+  "isActive": true,
+  "contact": null,
+  "level": null,
+  "bio": null,
+  "avatarUrl": null,
+  "name": "Usuario",
+  "username": "user",
+  "email": "user@mail.com",
+  "id": "021ab19f-f2e1-453a-8c6f-f438769c67f"
 }
 ```
 
 ### Possíveis Erros:
 
-| Código do Erro  | Descrição                                             |
-| --------------- | ----------------------------------------------------- |
-| 409 Conflict    | User already exists, try again with new informations. |
-| 400 Bad Request | Invalid field                                         |
+| Código do Erro | Descrição                                             |
+| -------------- | ----------------------------------------------------- |
+| 409 Conflict   | User already exists, try again with new informations. |
 
 ---
 
@@ -339,9 +335,7 @@ No-Body
 ### Body para a requisição:
 
 ```json
-{
-  "email": "teste@mail.com",
-  "password": "12345",
+{    
   "username": "Alteração do username",
   "name": "Ateração"
 }
@@ -355,19 +349,7 @@ STATUS: 200 OK
 
 ```json
 {
-  "deletedAt": null,
-  "updatedAt": "2023-01-12T07:15:03.238Z",
-  "createdAt": "2023-01-11T18:06:27.778Z",
-  "isAdm": false,
-  "isActive": true,
-  "contact": null,
-  "level": null,
-  "bio": null,
-  "avatarUrl": null,
-  "name": "Ateração",
-  "username": "Alteração do username",
-  "email": "teste@mail.com",
-  "id": "021ab19f-f2e1-453a-8c6f-f438769c67ff"
+  "message: User updated successfully"
 }
 ```
 
@@ -505,8 +487,7 @@ O objeto Projects é definido como:
   "maxTeamSize": "7",
   "technologies": [
     "c2b5ee31-8e30-403c-8acf-5731695b64b2",
-    "260042bd-b7ce-45e3-bd68-f119554fb674"
-  ]
+    "260042bd-b7ce-45e3-bd68-f119554fb674"  
 }
 ```
 
@@ -834,7 +815,7 @@ STATUS: 200 Ok
 
 [ Voltar para os Endpoints ](#4-endpoints)
 
-### `PATCH /projects/joinqueue/:id`
+### `POST /projects/joinqueue/:id`
 
 ### Parâmetros da Requisição:
 
