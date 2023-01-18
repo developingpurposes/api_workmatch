@@ -3,11 +3,17 @@ export interface IUserLogin {
   password: string;
 }
 
+export interface IUserFieldLogin {
+  email?: string;
+  password?: string;
+}
+
 export interface IUserRequest {
   email: string;
   password: string;
   username: string;
   name: string;
+  isAdm?: boolean;
 }
 
 export interface IUserRequestAdmin {
@@ -53,7 +59,6 @@ export interface IUserResponse {
   users: IUser[];
 }
 
-export interface IUserForgotPassword{
+export interface IUserForgotPassword {
   email: string;
 }
-

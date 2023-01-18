@@ -28,7 +28,7 @@ Visão geral do projeto, um pouco das tecnologias usadas e os integrantes da equ
 - [Yup](https://www.npmjs.com/package/yup)
 
 A URL base da aplicação:
-https://backend-workmatch.onrender.com
+https://backend-workmatch-deploy.onrender.com
 
 Integrantes:
 

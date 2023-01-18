@@ -17,6 +17,9 @@ export const handleError = async (
   if (error instanceof ValidationError) {
     return res.status(400).json({ message: error.errors });
   }
+  if (error instanceof SyntaxError) {
+    return res.status(404).json({ message: error.message });
+  }
 
   console.error(error);
 

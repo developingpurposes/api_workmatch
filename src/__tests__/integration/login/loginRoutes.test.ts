@@ -4,6 +4,7 @@ import { app } from "../../../app";
 import AppDataSource from "../../../data-source";
 import {
   mockedAdminLoginRequest,
+  mockedInvalidFieldRequest,
   mockedLoginRequest,
 } from "../../mocks/integration/login.mock";
 import { adminToken } from "../../mocks/integration/token.mocks";
@@ -43,6 +44,15 @@ describe("/login", () => {
       .send(mockedAdminLoginRequest);
     expect(response.body).not.toHaveProperty("token");
     expect(response.statusCode).toBe(401);
+  });
+
+  test("POST /login, Should not be able to login if field is empty or wrong", async () => {
+    const response = await request(app)
+      .post("/login")
+      .send(mockedInvalidFieldRequest);
+
+    expect(response.body).not.toHaveProperty("token");
+    expect(response.statusCode).toBe(400);
   });
 
   test("POST /login, Should not be able to login with isActive = false", async () => {

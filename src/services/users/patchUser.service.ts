@@ -5,12 +5,11 @@ import { Technologies } from "../../entities/technologies.entity";
 import { IUserUpdate } from "../../interfaces/users/user.interface";
 import { Users } from "../../entities/users.entity";
 import { Users_technologies } from "../../entities/users_technologies.entity";
-import { userListSerializer } from "../../serializers/users/users.serializers";
 
 export const patchUserService = async (
   newData: IUserUpdate,
   patchUserId: string
-) => {
+): Promise<object> => {
   let technologiesIds = newData.technologies;
 
   if (technologiesIds == undefined) {
@@ -65,10 +64,5 @@ export const patchUserService = async (
     });
   }
 
-  const userResponse = await userListSerializer.validate(updatedUser, {
-    stripUnknown: true,
-    abortEarly: false,
-  });
-
-  return userResponse;
+  return { message: "User updated successfully" };
 };
