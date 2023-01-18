@@ -382,6 +382,22 @@ describe("/project", () => {
     expect(response.status).toBe(200);
   });
 
+  test("GET /projects -  Must be able to list joined projects", async () => {
+    const response = await request(app)
+      .get("/projects/joinedprojects")
+      .set("Authorization", await adminToken());
+
+    expect(response.body.userProjects).toHaveLength(1);
+    expect(response.body.userProjects[0]).toHaveProperty("id");
+  });
+
+  test("GET /projects, Should not be able to list joined projects without authentication", async () => {
+    const response = await request(app).get("/projects/joinedprojects");
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
   test("DELETE /projects, Should not be able to delete projects without auhentication", async () => {
     const projectToBeDeleted = await request(app)
       .get("/projects")
