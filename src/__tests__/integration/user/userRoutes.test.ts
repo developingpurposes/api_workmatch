@@ -5,11 +5,10 @@ import {
   mockedAdminUserCreate,
   mockedUpdateUserCreate,
   mockedUserCreate,
+  mockedUserNotInfoCreate,
 } from "../../mocks/integration/user.mocks";
 import AppDataSource from "../../../data-source";
-import {
-  mockedLoginUpdateUserRequest,
-} from "../../mocks/integration/login.mock";
+import { mockedLoginUpdateUserRequest } from "../../mocks/integration/login.mock";
 import { adminToken, userToken } from "../../mocks/integration/token.mocks";
 
 describe("/users", () => {
@@ -54,11 +53,20 @@ describe("/users", () => {
     expect(response.status).toBe(201);
   });
 
-  test("POST /users -  should not be able to create a user that already exists", async () => {
+  test("POST /users -  Should not be able to create a user that already exists", async () => {
     const response = await request(app).post("/users").send(mockedUserCreate);
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(409);
+  });
+
+  test("POST /users - Should not be able to create a user with missing fields", async () => {
+    const response = await request(app)
+      .post("/users")
+      .send(mockedUserNotInfoCreate);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(400);
   });
 
   test("GET /users -  Must be able to list users", async () => {
@@ -78,7 +86,6 @@ describe("/users", () => {
   });
 
   test("GET /users -  should not be able to list users not being admin", async () => {
-
     const response = await request(app)
       .get("/users")
       .set("Authorization", await userToken());
@@ -118,6 +125,17 @@ describe("/users", () => {
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(404);
+  });
+
+  test("GET /users/:id -  should not be able to list user without authentication", async () => {
+    const users = await request(app)
+      .get("/users")
+      .set("Authorization", await adminToken());
+
+    const response = await request(app).get(`/users/${users.body.users[0].id}`);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
   });
 
   test("PATCH /users, Should not be able to update without authentication", async () => {

@@ -7,23 +7,25 @@ import { listUsersController } from "../../controllers/users/listUsers.controlle
 import { getUserController } from "../../controllers/users/getUser.controller";
 import { patchUserController } from "../../controllers/users/patchUser.controller";
 import { deleteUserController } from "../../controllers/users/deleteUser.controller";
-import { ensureDataIsValidMiddleware, ensureDataIsValidUserForgotPasswordMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
 import { updateSerializerProjects } from "../../serializers/projects/projects.serializer";
 import { ensureTechnologyMiddleware } from "../../middlewares/ensureTechnology.middleware";
 import {
   responseUserSerializer,
   updatedUserSerializer,
   userForgotPasswordSerializer,
+  userSerializer,
 } from "../../serializers/users/users.serializers";
 import { Users } from "../../entities/users.entity";
 import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.middleware";
 import { userForgotPasswordController } from "../../controllers/users/userForgotPassword.controller";
 import { userResetPasswordController } from "../../controllers/users/userResetPassword.controller";
+import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
 
 export const userRoutes = Router();
 
 userRoutes.post(
   "",
+  ensureDataIsValidMiddleware(userSerializer),
   ensureTechnologyMiddleware(responseUserSerializer),
   createUserController
 );
@@ -31,8 +33,8 @@ userRoutes.post(
 userRoutes.get(
   "",
   ensureAuthMiddleware,
-  ensureIsAdminMiddleware,
   ensureTechnologyMiddleware(responseUserSerializer),
+  ensureIsAdminMiddleware,
   listUsersController
 );
 
@@ -62,11 +64,8 @@ userRoutes.delete(
 
 userRoutes.post(
   "/forgotpassword",
-  ensureDataIsValidUserForgotPasswordMiddleware(userForgotPasswordSerializer),
+  ensureDataIsValidMiddleware(userForgotPasswordSerializer),
   userForgotPasswordController
 );
 
-userRoutes.get(
-  "/resetpassword/:token",
-  userResetPasswordController
-)
+userRoutes.get("/resetpassword/:token", userResetPasswordController);
