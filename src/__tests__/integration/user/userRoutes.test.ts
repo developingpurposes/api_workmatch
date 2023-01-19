@@ -34,7 +34,7 @@ describe("/users", () => {
 
     expect(response.body).toHaveProperty("id");
     expect(response.body).toHaveProperty("email");
-    expect(response.body).not.toHaveProperty("password"); // NOT
+    expect(response.body).not.toHaveProperty("password");
     expect(response.body).toHaveProperty("username");
     expect(response.body).toHaveProperty("name");
     expect(response.body).toHaveProperty("avatarUrl");
@@ -46,7 +46,6 @@ describe("/users", () => {
     expect(response.body).toHaveProperty("createdAt");
     expect(response.body).toHaveProperty("updatedAt");
 
-    //EXPECTED RESULTS
     expect(response.body.email).toEqual("fabio@mail.com");
     expect(response.body.isAdm).toEqual(false);
     expect(response.body.isActive).toEqual(true);
