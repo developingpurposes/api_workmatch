@@ -17,6 +17,10 @@ export const mockedAdminLoginRequest: IUserLogin = {
   password: "123456",
 };
 
+export const mockedvalidFieldRequest: IUserFieldLogin = {
+  email: "felipe@hotmail.com",
+};
+
 export const mockedInvalidFieldRequest: IUserFieldLogin = {
-  email: "",
+  email: "fabio@mail.com",
 };

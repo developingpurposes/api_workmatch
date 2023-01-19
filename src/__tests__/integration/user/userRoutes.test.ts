@@ -8,7 +8,11 @@ import {
   mockedUserNotInfoCreate,
 } from "../../mocks/integration/user.mocks";
 import AppDataSource from "../../../data-source";
-import { mockedLoginUpdateUserRequest } from "../../mocks/integration/login.mock";
+import {
+  mockedInvalidFieldRequest,
+  mockedLoginUpdateUserRequest,
+  mockedvalidFieldRequest,
+} from "../../mocks/integration/login.mock";
 import { adminToken, userToken } from "../../mocks/integration/token.mocks";
 
 describe("/users", () => {
@@ -67,6 +71,31 @@ describe("/users", () => {
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(400);
+  });
+
+  test("POST /users/forgotpassword - Should be able to send a password recovery email", async () => {
+    const response = await request(app)
+      .post("/users/forgotpassword")
+      .send(mockedInvalidFieldRequest);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(200);
+  });
+
+  test("POST /users/forgotpassword - Must not be able to send a password recovery email", async () => {
+    const response = await request(app).post("/users/forgotpassword");
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(400);
+  });
+
+  test("POST /users/forgotpassword - Should not be able to send a password recovery email to unregistered users", async () => {
+    const response = await request(app)
+      .post("/users/forgotpassword")
+      .send(mockedvalidFieldRequest);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(404);
   });
 
   test("GET /users - Must be able to list users", async () => {
@@ -133,6 +162,34 @@ describe("/users", () => {
       .set("Authorization", await adminToken());
 
     const response = await request(app).get(`/users/${users.body.users[0].id}`);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
+  test("GET /users/profile - Must be able to list user by Id", async () => {
+    const response = await request(app)
+      .get(`/users/profile`)
+      .set("Authorization", await adminToken());
+
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("email");
+    expect(response.body).not.toHaveProperty("password");
+    expect(response.body).toHaveProperty("username");
+    expect(response.body).toHaveProperty("name");
+    expect(response.body).toHaveProperty("avatarUrl");
+    expect(response.body).toHaveProperty("bio");
+    expect(response.body).toHaveProperty("level");
+    expect(response.body).toHaveProperty("contact");
+    expect(response.body).toHaveProperty("isActive");
+    expect(response.body).toHaveProperty("isAdm");
+    expect(response.body).toHaveProperty("createdAt");
+    expect(response.body).toHaveProperty("updatedAt");
+    expect(response.status).toBe(200);
+  });
+
+  test("GET /users/profile - Should not be able to list user without authentication", async () => {
+    const response = await request(app).get(`/users/profile`);
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);

@@ -20,6 +20,7 @@ import { ensureIdIsValidMiddleware } from "../../middlewares/ensureIdIsValid.mid
 import { userForgotPasswordController } from "../../controllers/users/userForgotPassword.controller";
 import { userResetPasswordController } from "../../controllers/users/userResetPassword.controller";
 import { ensureDataIsValidMiddleware } from "../../middlewares/ensureDataIsValid.middleware";
+import { profileUsersController } from "../../controllers/users/profileUser.controller";
 
 export const userRoutes = Router();
 
@@ -36,6 +37,13 @@ userRoutes.get(
   ensureTechnologyMiddleware(responseUserSerializer),
   ensureIsAdminMiddleware,
   listUsersController
+);
+
+userRoutes.get(
+  "/profile",
+  ensureAuthMiddleware,
+  ensureTechnologyMiddleware(responseUserSerializer),
+  profileUsersController
 );
 
 userRoutes.get(
