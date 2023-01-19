@@ -46,6 +46,6 @@ export const forgotPasswordSendEmail = async (email:string,link:string,name:stri
           
       }).catch((err) => {
           console.log(err)
-          throw new AppError('Error to sending email, try again later')
+          throw new AppError('Error to send email, try again later')
       })
 }
