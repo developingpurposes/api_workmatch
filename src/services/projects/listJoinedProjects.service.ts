@@ -35,14 +35,14 @@ export const listJoinedProjectsService = async (
   let nextPage: string =
     totalPages <= validatedPage
       ? null
-      : `https://backend-workmatch.onrender.com/projects/joinedprojects?page=${
+      : `https://backend-workmatch-deploy.onrender.com/projects/joinedprojects?page=${
           validatedPage + 1
         }`;
 
   let previousPage: string =
     skip * limit <= 1
       ? null
-      : `https://backend-workmatch.onrender.com/projects/joinedprojects?page=${
+      : `https://backend-workmatch-deploy.onrender.com/projects/joinedprojects?page=${
           validatedPage - 1
         }`;
 
