@@ -2,6 +2,12 @@
 
 ---
 
+# Vamos falar de Backend !?
+
+A API WorkMatch foi desenvolvida para armazenar e combinar dados necessários para uma aplicação que conecta ideias para desenvolvimento e a equipe mais compatível para a realização. Ela permite que possamos ter acesso aos dados de usuários, suas tecnologias e projetos - idealizados por si e de que faz parte. Através dessa API, podemos interagir criando esses projetos colaborativos onde outras pessoas que possuem interesse possam participar. Isso ocorre por meio da avaliação da compatibilidade de cada candidato a participante pelo idealizador (podendo aprovar ou não essa ação). Essa escolha pode ser feita com base na descrição do projeto e das tecnologias setadas como necessárias para a aplicação, verificando se existe um MATCH entre desenvolvedor e proposta. Assim que o projeto estiver com o seu time pronto vamos para o WORK, com a equipe mais qualificada para atingir nossos objetivos
+
+---
+
 # Documentação da API
 
 ## Indice
@@ -12,11 +18,15 @@
   - [Instalando Dependências](#31-instalando-dependências)
   - [Variáveis de Ambiente](#32-variáveis-de-ambiente)
   - [Migrations](#33-migrations)
-- [Endpoints](#4-endpoints) -[Considerações Finais](#5)
+- [Endpoints](#4-endpoints)
+- [Considerações Finais](#5-considerações-finais)
 
 ---
 
 ## 1. Visão Geral
+
+A URL base da aplicação:
+https://backend-workmatch.onrender.com
 
 Visão geral do projeto, um pouco das tecnologias usadas e os integrantes da equipe.
 
@@ -26,9 +36,6 @@ Visão geral do projeto, um pouco das tecnologias usadas e os integrantes da equ
 - [PostgreSQL](https://www.postgresql.org/)
 - [TypeORM](https://typeorm.io/)
 - [Yup](https://www.npmjs.com/package/yup)
-
-A URL base da aplicação:
-https://backend-workmatch-deploy.onrender.com
 
 Integrantes:
 
@@ -80,6 +87,7 @@ Execute as migrations com o comando:
 
 ```
 yarn typeorm migration:run -d src/data-source.ts
+
 ```
 
 ---
@@ -95,8 +103,11 @@ yarn typeorm migration:run -d src/data-source.ts
   - [POST - /users](#11-criação-de-usuário)
   - [GET - /users](#12-listando-usuários)
   - [GET - /users/:id](#13-listar-usuário-por-id)
-  - [PATCH - /users/:id](#12-atualizar-os-dados-do-usuário)
-  - [DELETE - /users/:id](#12-deletando-usuário)
+  - [POST - /users/forgotpassword](#14-recuperação-de-senha)
+  - [GET - /users/resetpassword/:token](#15-mostrar-o-token-ao-usuário)
+  - [GET - /users/profile](#16-informações-do-perfil-do-usuário-logado)
+  - [PATCH - /users/:id](#17-atualizar-os-dados-do-usuário)
+  - [DELETE - /users/:id](#18-deletando-usuário)
 
 - [Login](#2-login)
 
@@ -146,13 +157,16 @@ O objeto User é definido como:
 
 ### Endpoints
 
-| Método | Rota            | Descrição                                     |
-| ------ | --------------- | --------------------------------------------- |
-| POST   | /users          | Criação de um usuário.                        |
-| GET    | /users          | Lista todos os usuários                       |
-| GET    | /users/:user_id | Lista um usuário usando seu ID como parâmetro |
-| PATCH  | /users/:id      | Atualização dos dados do usuário              |
-| DELETE | /users/:id      | Deleta o usuário passando o ID                |
+| Método | Rota                        | Descrição                                     |
+| ------ | --------------------------- | --------------------------------------------- |
+| POST   | /users                      | Criação de um usuário.                        |
+| GET    | /users                      | Lista todos os usuários                       |
+| GET    | /users/:user_id             | Lista um usuário usando seu ID como parâmetro |
+| POST   | /users/forgotpassword       | Recuperação de senha                          |
+| GET    | /users/resetpassword/:token | Mostra ao usuário seu token                   |
+| GET    | /users/profile              | Informações do perfil                         |
+| PATCH  | /users/:id                  | Atualização dos dados do usuário              |
+| DELETE | /users/:id                  | Deleta o usuário passando o ID                |
 
 ---
 
@@ -320,7 +334,125 @@ No-Body
 
 ---
 
-### 1.2. **Atualizar os dados do usuário**
+### 1.4 **Recuperação de senha**
+
+[ Voltar aos Endpoints ](#4-endpoints)
+
+### `POST /users/forgotpassword`
+
+### Body para a Requisição:
+
+```json
+{
+  "email": "usuario@email.com"
+}
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "message": "password recovery email sent"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição         |
+| ---------------- | ----------------- |
+| 404 Not Found    | User not found.   |
+| 401 Unauthorized | Invalid signature |
+
+---
+
+### 1.5 **Mostrar o token ao usuário**
+
+[ Voltar aos Endpoints ](#4-endpoints)
+
+### `GET /users/resetpassword/:token`
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo   | Descrição        |
+| --------- | ------ | ---------------- |
+| token     | string | Token do usuário |
+
+### Body para a Requisição:
+
+```json
+No-Body
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "token": "eYOUBFuuojngsgUBDUIYjhrIkpXVCJ9eyJpc0FjdGl2ZSI6dHJ1ZSwiaXNBZG0iOmZhbHNlLCJpYXQiOjE2NzM4Nzg1NzgsImV4cCI6MTY3Mzk2NDk3OCwic3ViIjoiNIUWASHDUIBH0IHNF9UQEWHUYGBf2Zi00YTY4LWJkYmQtOWI4ZGM4N2EzZDE5In0CdBo9mk-ZpJwgJX4hNEIXqXo_VLMe6XXZRy2f4W4JEs"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição         |
+| ---------------- | ----------------- |
+| 404 Not Found    | User not found.   |
+| 401 Unauthorized | Invalid signature |
+
+---
+
+### 1.6 **Informações do perfil do usuário logado**
+
+[ Voltar aos Endpoints ](#4-endpoints)
+
+### `GET /users/profile`
+
+### Body para a Requisição:
+
+```json
+No-Body
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "deletedAt": null,
+  "updatedAt": "2023-01-11T18:06:27.778Z",
+  "createdAt": "2023-01-11T18:06:27.778Z",
+  "isAdm": false,
+  "isActive": true,
+  "contact": null,
+  "level": null,
+  "bio": null,
+  "avatarUrl": null,
+  "name": "Usuario",
+  "username": "user",
+  "email": "user@mail.com",
+  "id": "021ab19f-f2e1-453a-8c6f-f438769c67f"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro | Descrição       |
+| -------------- | --------------- |
+| 404 Not Found  | User not found. |
+
+---
+
+### 1.7 **Atualizar os dados do usuário**
 
 [ Voltar aos Endpoints ](#4-endpoints)
 
@@ -335,7 +467,9 @@ No-Body
 ### Body para a requisição:
 
 ```json
-{    
+{
+  "email": "teste@mail.com",
+  "password": "12345",
   "username": "Alteração do username",
   "name": "Ateração"
 }
@@ -349,7 +483,19 @@ STATUS: 200 OK
 
 ```json
 {
-  "message: User updated successfully"
+  "deletedAt": null,
+  "updatedAt": "2023-01-12T07:15:03.238Z",
+  "createdAt": "2023-01-11T18:06:27.778Z",
+  "isAdm": false,
+  "isActive": true,
+  "contact": null,
+  "level": null,
+  "bio": null,
+  "avatarUrl": null,
+  "name": "Ateração",
+  "username": "Alteração do username",
+  "email": "teste@mail.com",
+  "id": "021ab19f-f2e1-453a-8c6f-f438769c67ff"
 }
 ```
 
@@ -362,7 +508,7 @@ STATUS: 200 OK
 
 ---
 
-### 1.2. **Deletando usuário**
+### 1.8 **Deletando usuário**
 
 [ Voltar aos Endpoints ](#4-endpoints)
 
@@ -487,7 +633,8 @@ O objeto Projects é definido como:
   "maxTeamSize": "7",
   "technologies": [
     "c2b5ee31-8e30-403c-8acf-5731695b64b2",
-    "260042bd-b7ce-45e3-bd68-f119554fb674"  
+    "260042bd-b7ce-45e3-bd68-f119554fb674"
+  ]
 }
 ```
 
@@ -1142,4 +1289,5 @@ STATUS: 204 No Content
 
 ## 5. Considerações finais!
 
-Projeto BackEnd para uma aplicação que foi pensada para ajudar a comunidade de devs e gerar benefícios mútuos.
+Percebemos que o desenvolvimento de uma API dinâmica que possa fazer a conexão entre dados que se inter-relacionam em diferentes situações era essencial para a proposta WorkMatch. Através desse desenvolvimento facilitamos as interações pelo usuário, que consegue utilizar esses dados numa diversidade de contextos. Além disso, todas essas interações foram pensadas com foco na segurança desses dados e na praticidade da utilização da aplicação. Essa segurança acontece através da validação dos dados em cada rota para certificar que as transferências de informação ocorram de maneira correta e organizada.
+Esperamos que a utilização dessas funcionalidades possam ampliar possibilidades e garantir o sucesso na realização desse objetivo!
