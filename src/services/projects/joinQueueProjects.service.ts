@@ -20,11 +20,15 @@ export const joinQueueProjectsServices = async (
     .select("projectQueue")
     .leftJoinAndSelect("projectQueue.projects", "projects")
     .leftJoinAndSelect("projectQueue.user", "user")
-    .where("user.id = :id", { id: userId })
-    .where("projects.id = :id", { id: projectId })
+    .where("projectQueue.isConfirmed = :isConfirmed", { isConfirmed: false })
+    .andWhere("projects.id = :id", { id: projectId })
     .getMany();
 
-  if (userSearch.length) {
+  const user = userSearch.filter(
+    (projectQueue) => projectQueue.user.id === userId
+  );
+
+  if (user.length) {
     throw new AppError("User already joined in the queue!", 409);
   }
 
@@ -34,7 +38,6 @@ export const joinQueueProjectsServices = async (
       owner: true,
     },
   });
-
 
   if (findUser.owner.id == userId) {
     throw new AppError("You can't join on your own project", 409);
