@@ -1290,7 +1290,6 @@ STATUS: 204 No Content
 ## 5. Considerações finais!
 
 [ Voltar para o topo ](#tabela-de-conteúdos)
-[ Voltar para os Endpoints ](#4-endpoints)
 
 Percebemos que o desenvolvimento de uma API dinâmica que possa fazer a conexão entre dados que se inter-relacionam em diferentes situações era essencial para a proposta WorkMatch. Através desse desenvolvimento facilitamos as interações pelo usuário, que consegue utilizar esses dados numa diversidade de contextos. Além disso, todas essas interações foram pensadas com foco na segurança desses dados e na praticidade da utilização da aplicação. Essa segurança acontece através da validação dos dados em cada rota para certificar que as transferências de informação ocorram de maneira correta e organizada.
 Esperamos que a utilização dessas funcionalidades possam ampliar possibilidades e garantir o sucesso na realização desse objetivo!
