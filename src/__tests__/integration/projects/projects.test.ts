@@ -385,7 +385,7 @@ describe("/project", () => {
   test("GET /projects, Must be able to list joined projects", async () => {
     const response = await request(app)
       .get("/projects/joinedprojects")
-      .set("Authorization", await adminToken());
+      .set("Authorization", await userToken());
 
     expect(response.body.userProjects).toHaveLength(1);
     expect(response.body.userProjects[0]).toHaveProperty("id");
